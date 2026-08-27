@@ -13,4 +13,5 @@ export const donateSchema = z.object({
   isAnonymous: z.boolean().default(false),
 });
 
-export type DonateInput = z.infer<typeof donateSchema>;
+export type DonateFormInput = z.input<typeof donateSchema>;
+export type DonateInput = z.output<typeof donateSchema>;

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { donateSchema, type DonateInput } from "@/lib/schemas/donate";
+import { donateSchema, type DonateFormInput, type DonateInput } from "@/lib/schemas/donate";
 
 const PRESET_AMOUNTS = [10, 25, 50, 100];
 
@@ -17,7 +17,7 @@ export default function DonateForm({ campaignId }: { campaignId?: string }) {
     watch,
     setValue,
     formState: { errors },
-  } = useForm<DonateInput>({
+  } = useForm<DonateFormInput>({
     resolver: zodResolver(donateSchema),
     defaultValues: {
       currency: "USD",
