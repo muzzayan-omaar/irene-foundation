@@ -17,7 +17,7 @@ export default function DonateForm({ campaignId }: { campaignId?: string }) {
     watch,
     setValue,
     formState: { errors },
-  } = useForm<DonateFormInput>({
+  } = useForm<DonateFormInput, unknown, DonateInput>({
     resolver: zodResolver(donateSchema),
     defaultValues: {
       currency: "USD",
