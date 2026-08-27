@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { initiatePayment } from "@/lib/flutterwave";
+// PAYMENT GATEWAY: frozen pending KYC/registration (see note below) — swap
+// this import for a real gateway module (flutterwave.ts / paystack.ts / dpo.ts)
+// once one is confirmed working with Irene's foundation's registration status.
+function initiatePayment(): Promise<string> {
+  throw new Error(
+    "Payment gateway not yet configured — donation flow is paused pending Flutterwave/Paystack/DPO account setup."
+  );
+}
 import { donateSchema } from "@/lib/schemas/donate";
 
 export async function POST(req: NextRequest) {
@@ -47,19 +54,15 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // donation.id doubles as the Flutterwave tx_ref — unique already, so the
+    // donation.id doubles as the Paystack reference — unique already, so the
     // webhook can look the donation straight back up with no extra field needed
     const checkoutLink = await initiatePayment({
-      txRef: donation.id,
+      reference: donation.id,
       amount: data.amount,
       currency: data.currency,
-      redirectUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/donate/success`,
-      customer: {
-        email: data.email,
-        name: data.fullName,
-        phone: data.phone,
-      },
-      meta: {
+      callbackUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/donate/success`,
+      email: data.email,
+      metadata: {
         donationId: donation.id,
         campaignId: data.campaignId ?? "",
       },

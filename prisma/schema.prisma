@@ -55,6 +55,14 @@ enum AdminRole {
   EDITOR
 }
 
+enum SocialPlatform {
+  INSTAGRAM
+  TWITTER
+  FACEBOOK
+  TIKTOK
+  OTHER
+}
+
 // ─────────────────────────────────────────────
 // CORE MODELS
 // ─────────────────────────────────────────────
@@ -169,6 +177,31 @@ model AdminUser {
 // ─────────────────────────────────────────────
 // SUPPORT / ANALYTICS
 // ─────────────────────────────────────────────
+
+model SupportPost {
+  id          String         @id @default(cuid())
+  authorName  String
+  platform    SocialPlatform @default(OTHER)
+  content     String         @db.Text
+  imageUrl    String?
+  sourceUrl   String?        // link back to the original post, if applicable
+  isFeatured  Boolean        @default(true)
+  createdAt   DateTime       @default(now())
+
+  @@index([isFeatured])
+}
+
+model PressMention {
+  id            String    @id @default(cuid())
+  outletName    String
+  title         String
+  url           String
+  logoUrl       String?
+  publishedDate DateTime?
+  createdAt     DateTime  @default(now())
+
+  @@index([publishedDate])
+}
 
 model NewsletterSubscriber {
   id        String   @id @default(cuid())
