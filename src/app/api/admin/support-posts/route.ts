@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import prisma from "@/lib/prisma";
-
-// ⚠️ TEMPORARY — NO AUTHENTICATION YET. Same caveat as other /api/admin routes.
+import { requireAdmin } from "@/lib/auth/requireAdmin";
 
 const supportPostSchema = z.object({
   authorName: z.string().min(1),
@@ -14,6 +13,11 @@ const supportPostSchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+  const { authorized } = await requireAdmin();
+  if (!authorized) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const body = await req.json();
   const parsed = supportPostSchema.safeParse(body);
 

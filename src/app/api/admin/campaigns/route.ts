@@ -1,11 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import prisma from "@/lib/prisma";
-
-// ⚠️ TEMPORARY — NO AUTHENTICATION ON THIS ROUTE YET.
-// This exists purely so campaigns can be created/edited during Phase 2
-// development before the real admin dashboard (Phase 5, Supabase Auth-gated)
-// exists. Do NOT expose this to the public internet without auth in front of it.
+import { requireAdmin } from "@/lib/auth/requireAdmin";
 
 const campaignSchema = z.object({
   title: z.string().min(2),
@@ -18,6 +14,11 @@ const campaignSchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+  const { authorized } = await requireAdmin();
+  if (!authorized) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const body = await req.json();
   const parsed = campaignSchema.safeParse(body);
 
@@ -33,6 +34,11 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
+  const { authorized } = await requireAdmin();
+  if (!authorized) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const body = await req.json();
   const { id, ...rest } = body;
 

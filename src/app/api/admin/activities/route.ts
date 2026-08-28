@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import prisma from "@/lib/prisma";
-
-// ⚠️ TEMPORARY — NO AUTHENTICATION ON THIS ROUTE YET.
-// Same caveat as /api/admin/campaigns — real auth arrives in Phase 5.
+import { requireAdmin } from "@/lib/auth/requireAdmin";
 
 const activitySchema = z.object({
   title: z.string().min(2),
@@ -16,6 +14,11 @@ const activitySchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+  const { authorized } = await requireAdmin();
+  if (!authorized) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const body = await req.json();
   const parsed = activitySchema.safeParse(body);
 
@@ -37,6 +40,11 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
+  const { authorized } = await requireAdmin();
+  if (!authorized) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const body = await req.json();
   const { id, ...rest } = body;
 
