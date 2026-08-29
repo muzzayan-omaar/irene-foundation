@@ -25,22 +25,34 @@ export default function CampaignCard({
   return (
     <Link
       href={`/campaigns/${slug}`}
-      className="block rounded-xl border border-gray-100 overflow-hidden hover:shadow-md transition-shadow"
+      className="group block rounded-2xl overflow-hidden border border-ink/10 hover:shadow-lg transition-shadow"
     >
-      {coverImage && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={coverImage} alt={title} className="w-full h-48 object-cover" />
-      )}
-      <div className="p-4 space-y-3">
-        <h3 className="font-semibold text-lg">{title}</h3>
+      <div className="aspect-[4/3] overflow-hidden bg-ink/5">
+        {coverImage ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={coverImage}
+            alt={title}
+            className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-ink/30 text-sm">
+            No photo yet
+          </div>
+        )}
+      </div>
+      <div className="p-5 space-y-3">
+        <h3 className="font-display font-semibold text-xl">{title}</h3>
         <WaveformProgress percent={progressPercent} />
-        <div className="flex justify-between text-sm text-gray-600">
-          <span>
-            {currency} {raisedAmount.toLocaleString()} raised
+        <div className="flex justify-between text-sm">
+          <span className="font-mono font-medium text-clay">
+            {currency} {raisedAmount.toLocaleString()}
           </span>
-          <span>of {currency} {goalAmount.toNumber().toLocaleString()}</span>
+          <span className="text-ink/40">
+            of {currency} {goalAmount.toNumber().toLocaleString()}
+          </span>
         </div>
-        <p className="text-xs text-gray-400">{donorCount} donors</p>
+        <p className="text-xs text-ink/40">{donorCount} donors</p>
       </div>
     </Link>
   );

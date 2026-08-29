@@ -1,69 +1,477 @@
 import Link from "next/link";
-import SupporterCounter from "@/components/SupporterCounter";
-import { WaveformDivider } from "@/components/Waveform";
 import { SITE_TAGLINE, SITE_HASHTAG } from "@/lib/config";
+import { listActiveCampaigns } from "@/lib/campaigns";
+import { listPublishedActivities } from "@/lib/activities";
+import { getSupporterCount } from "@/lib/supporters";
+import { WaveformProgress, WaveformDivider } from "@/components/Waveform";
+import NewsletterForm from "@/components/NewsletterForm";
+import prisma from "@/lib/prisma";
 
-export default function Home() {
+
+const HERO_IMAGE_URL =
+  "https://images.unsplash.com/photo-1509099836639-18ba1795216d?q=80&w=1600";
+const HERO_VIDEO_URL: string | null =
+  "https://res.cloudinary.com/diszilwhc/video/upload/v1788008803/GeneralBackgroundVideo-opt_f4xf86.mp4";
+const FOUNDER_PHOTO_URL =
+  "https://res.cloudinary.com/diszilwhc/image/upload/v1788011742/46667943_1942558049147382_7934771016423702528_o_oo8auc.jpg";
+
+const PANEL_THEMES = [
+  { bg: "bg-ink", text: "text-paper", accent: "text-sun" },
+  { bg: "bg-papyrus", text: "text-paper", accent: "text-sun" },
+  { bg: "bg-clay", text: "text-paper", accent: "text-paper" },
+];
+
+export default async function Home() {
+  const [
+    campaigns,
+    activities,
+    supporterCount,
+    supportPosts,
+    pressMentions,
+    totalRaised,
+    activeCampaignCount,
+  ] = await Promise.all([
+    listActiveCampaigns(),
+    listPublishedActivities("ALL"),
+    getSupporterCount(),
+    prisma.supportPost.findMany({
+      where: { isFeatured: true },
+      orderBy: { createdAt: "desc" },
+      take: 3,
+    }),
+    prisma.pressMention.findMany({ take: 6 }),
+    prisma.donation.aggregate({
+      where: { status: "SUCCESSFUL" },
+      _sum: { amount: true },
+    }),
+    prisma.campaign.count({ where: { status: "ACTIVE" } }),
+  ]);
+
+  const featuredCampaigns = campaigns.slice(0, 3);
+  const featuredActivities = activities.slice(0, 6);
+  const raisedTotal = totalRaised._sum.amount?.toNumber() ?? 0;
+
   return (
     <div>
-      {/* Hero */}
-      <section className="relative min-h-[85vh] flex flex-col justify-center px-6 sm:px-12 bg-ink text-paper overflow-hidden">
-        <div className="max-w-3xl">
-          <p className="font-mono text-sun text-sm tracking-widest uppercase mb-6">
-            {SITE_HASHTAG}
-          </p>
-          <h1 className="font-display font-extrabold text-5xl sm:text-7xl leading-[1.05] mb-6">
+      {/* ─── Hero ─────────────────────────────────────────────── */}
+      <section className="relative min-h-[88vh] flex flex-col justify-end px-6 sm:px-12 pb-16 sm:pb-20 text-paper overflow-hidden">
+        {HERO_VIDEO_URL ? (
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            poster={HERO_IMAGE_URL}
+            className="absolute inset-0 w-full h-full object-cover"
+          >
+            <source src={HERO_VIDEO_URL} type="video/mp4" />
+          </video>
+        ) : (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={HERO_IMAGE_URL}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/15" />
+        <div className="absolute inset-0 bg-gradient-to-r from-ink/20 via-transparent to-transparent" />
+
+        <div className="relative max-w-3xl">
+          <div className="flex items-center gap-3 mb-5">
+            <span className="h-px w-8 bg-sun" />
+            <p className="font-mono text-sun text-xs sm:text-sm tracking-[0.2em] uppercase">
+              {SITE_HASHTAG}
+            </p>
+          </div>
+
+          <h1 className="font-display font-extrabold text-5xl sm:text-6xl lg:text-7xl leading-[1.02] tracking-tight mb-5">
             {SITE_TAGLINE}
           </h1>
-          <p className="text-paper/70 text-lg max-w-xl mb-10">
+
+          <p className="text-paper/80 text-base sm:text-lg max-w-xl mb-9 leading-relaxed">
             Real work, real voices, real proof — every gift here goes toward
             people you can actually see and stories you can actually follow.
           </p>
-          <div className="flex flex-wrap gap-4">
+
+          <div className="flex flex-wrap gap-3">
             <Link
               href="/campaigns"
-              className="bg-sun text-ink px-6 py-3 rounded-full font-semibold hover:brightness-95 transition"
+              className="bg-sun text-ink px-7 py-3 rounded-full font-semibold text-sm hover:brightness-105 transition"
             >
-              See Active Campaigns
+              Give Now
             </Link>
             <Link
               href="/field-notes"
-              className="border border-paper/30 text-paper px-6 py-3 rounded-full font-semibold hover:bg-paper/10 transition"
+              className="border border-paper/35 text-paper px-7 py-3 rounded-full font-semibold text-sm hover:bg-paper/10 transition"
             >
-              Read Field Notes
+              See the Proof
             </Link>
           </div>
         </div>
       </section>
 
-      <div className="px-6 sm:px-12 py-3 bg-paper">
-        <WaveformDivider />
-      </div>
-
-      {/* Supporter counter */}
-      <section className="py-16 px-6 sm:px-12 text-center">
-        <SupporterCounter />
+      {/* ─── Trust stats ──────────────────────────────────────── */}
+      <section className="bg-paper border-b border-ink/8 px-6 sm:px-12 py-9">
+        <div className="max-w-5xl mx-auto grid grid-cols-3 gap-4 sm:gap-8 text-center">
+          <div>
+            <p className="font-mono text-2xl sm:text-4xl font-semibold text-clay tracking-tight">
+              USD {raisedTotal.toLocaleString()}
+            </p>
+            <p className="text-[11px] sm:text-sm text-ink/45 mt-1.5">Raised so far</p>
+          </div>
+          <div>
+            <p className="font-mono text-2xl sm:text-4xl font-semibold text-clay tracking-tight">
+              {activeCampaignCount}
+            </p>
+            <p className="text-[11px] sm:text-sm text-ink/45 mt-1.5">Active campaigns</p>
+          </div>
+          <div>
+            <p className="font-mono text-2xl sm:text-4xl font-semibold text-clay tracking-tight">
+              {supporterCount.toLocaleString()}
+            </p>
+            <p className="text-[11px] sm:text-sm text-ink/45 mt-1.5">Supporters</p>
+          </div>
+        </div>
+        <p className="text-center mt-5">
+          <Link
+            href="/transparency"
+            className="text-sm text-ink/45 hover:text-ink underline underline-offset-2 transition"
+          >
+            See the full breakdown →
+          </Link>
+        </p>
       </section>
 
-      <div className="px-6 sm:px-12 py-3">
-        <WaveformDivider />
-      </div>
+      {/* ─── Campaign panels ──────────────────────────────────── */}
+      {featuredCampaigns.map((campaign, i) => {
+        const theme = PANEL_THEMES[i % PANEL_THEMES.length];
+        const imageFirst = i % 2 === 0;
 
-      {/* CTA strip */}
-      <section className="py-20 px-6 sm:px-12 bg-papyrus text-paper text-center">
-        <h2 className="font-display font-bold text-3xl sm:text-4xl mb-4">
-          Every voice added makes this louder.
-        </h2>
-        <p className="text-paper/70 max-w-lg mx-auto mb-8">
-          Join the people already supporting this work — share, follow, or
-          give whatever you can.
+        return (
+          <section key={campaign.id} className="grid grid-cols-1 md:grid-cols-2">
+            <div
+              className={`relative min-h-[55vh] md:min-h-[65vh] ${
+                imageFirst ? "md:order-1" : "md:order-2"
+              }`}
+            >
+              {campaign.coverImage ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={campaign.coverImage}
+                  alt={campaign.title}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              ) : (
+                <div className={`absolute inset-0 ${theme.bg} opacity-50`} />
+              )}
+            </div>
+
+            <div
+              className={`${theme.bg} ${theme.text} flex flex-col justify-center px-8 sm:px-14 lg:px-16 py-14 sm:py-20 ${
+                imageFirst ? "md:order-2" : "md:order-1"
+              }`}
+            >
+              <p className={`font-mono text-xs tracking-[0.18em] uppercase mb-4 ${theme.accent}`}>
+                Active Campaign
+              </p>
+              <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl leading-[1.1] tracking-tight mb-5">
+                {campaign.title}
+              </h2>
+              <p className="text-base sm:text-lg opacity-80 mb-7 max-w-md leading-relaxed">
+                {campaign.story.slice(0, 160)}
+                {campaign.story.length > 160 ? "…" : ""}
+              </p>
+
+              <div className="max-w-sm mb-2">
+                <WaveformProgress percent={campaign.progressPercent} />
+              </div>
+              <p className={`font-mono text-sm mb-8 ${theme.accent}`}>
+                {campaign.currency} {campaign.raisedAmount.toLocaleString()} of{" "}
+                {campaign.currency} {campaign.goalAmount.toString()}
+                <span className="opacity-70"> · {campaign.donorCount} donors</span>
+              </p>
+
+              <Link
+                href={`/campaigns/${campaign.slug}`}
+                className="inline-block bg-sun text-ink px-6 py-3 rounded-full font-semibold text-sm w-fit hover:brightness-105 transition"
+              >
+                Give to This Campaign
+              </Link>
+            </div>
+          </section>
+        );
+      })}
+
+      {/* ─── Founder ──────────────────────────────────────────── */}
+      <section className="grid grid-cols-1 md:grid-cols-2">
+        <div className="relative min-h-[50vh] md:min-h-[60vh]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={FOUNDER_PHOTO_URL}
+            alt="Irene Namatovu"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        </div>
+        <div className="bg-paper flex flex-col justify-center px-8 sm:px-14 lg:px-16 py-14 sm:py-16">
+          <p className="font-mono text-clay text-xs tracking-[0.18em] uppercase mb-4">
+            Why this exists
+          </p>
+          <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl leading-[1.1] tracking-tight mb-5">
+            A voice for the people who don&apos;t often get heard.
+          </h2>
+          <p className="text-ink/65 text-base sm:text-lg mb-8 max-w-md leading-relaxed">
+            {/* TODO: replace with Irene's real founder story once she sends it */}
+            Irene Namatovu started this foundation to turn her platform into
+            direct, visible support for communities across Uganda — not
+            promises, but proof you can follow campaign by campaign.
+          </p>
+          <Link
+            href="/field-notes"
+            className="inline-block border border-ink/15 text-ink px-6 py-3 rounded-full font-semibold text-sm w-fit hover:bg-ink/5 transition"
+          >
+            Read Her Story
+          </Link>
+        </div>
+      </section>
+
+      {/* ─── Momentum ─────────────────────────────────────────── */}
+      <section className="relative bg-sun text-ink px-6 sm:px-12 py-16 sm:py-20 text-center overflow-hidden">
+        <p className="font-mono text-xs tracking-[0.2em] uppercase mb-4 opacity-60">
+          {SITE_HASHTAG}
         </p>
-        <Link
-          href="/campaigns"
-          className="inline-block bg-sun text-ink px-6 py-3 rounded-full font-semibold hover:brightness-95 transition"
-        >
-          Get Involved
-        </Link>
+        <h2 className="font-display font-extrabold text-3xl sm:text-5xl leading-[1.1] tracking-tight mb-4">
+          {supporterCount.toLocaleString()} people
+          <br className="hidden sm:block" />
+          have joined this movement.
+        </h2>
+        <p className="text-base sm:text-lg opacity-70 max-w-md mx-auto mb-8 leading-relaxed">
+          Every share, every gift, every follow adds a voice. Add yours —
+          tag {SITE_HASHTAG} when you do.
+        </p>
+        <div className="max-w-xs mx-auto opacity-40">
+          <WaveformDivider />
+        </div>
+      </section>
+
+      {/* ─── Field Notes — staggered blog cards ───────────────── */}
+      {featuredActivities.length > 0 && (
+        <section className="bg-ink py-16 sm:py-24">
+          <div className="px-6 sm:px-12 mb-12 sm:mb-16 max-w-5xl mx-auto">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="h-px w-8 bg-sun" />
+              <p className="font-mono text-sun text-xs tracking-[0.2em] uppercase">
+                {SITE_HASHTAG}
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+              <div>
+                <p className="font-mono text-paper/50 text-xs tracking-[0.18em] uppercase mb-2">
+                  Proof it&apos;s real
+                </p>
+                <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl text-paper tracking-tight">
+                  Field Notes
+                </h2>
+              </div>
+              <Link
+                href="/field-notes"
+                className="text-sm font-medium text-paper/55 hover:text-paper transition"
+              >
+                See all →
+              </Link>
+            </div>
+          </div>
+
+          <div className="space-y-8 sm:space-y-12">
+            {featuredActivities.map((activity, i) => {
+              const isLeft = i % 2 === 0;
+
+              return (
+                <Link
+                  key={activity.id}
+                  href={`/field-notes/${activity.slug}`}
+                  className={`group flex flex-col sm:flex-row items-stretch overflow-hidden ${
+                    isLeft
+                      ? "sm:mr-[12%] lg:mr-[18%]"
+                      : "sm:ml-[12%] lg:ml-[18%] sm:flex-row-reverse"
+                  }`}
+                >
+                  {/* Image */}
+                  <div className="relative w-full sm:w-[48%] aspect-[16/10] sm:aspect-auto sm:min-h-[280px] overflow-hidden">
+                    {activity.mediaUrls[0] ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={activity.mediaUrls[0]}
+                        alt={activity.title}
+                        className="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-papyrus" />
+                    )}
+                  </div>
+
+                  {/* Content */}
+                  <div
+                    className={`w-full sm:w-[52%] flex flex-col justify-center px-6 sm:px-10 py-8 sm:py-10 ${
+                      isLeft ? "bg-paper text-ink" : "bg-papyrus text-paper"
+                    }`}
+                  >
+                    <p
+                      className={`font-mono text-[11px] tracking-[0.16em] uppercase mb-3 ${
+                        isLeft ? "text-clay" : "text-sun"
+                      }`}
+                    >
+                      {activity.type.replace("_", " ")}
+                    </p>
+                    <h3 className="font-display font-bold text-xl sm:text-2xl lg:text-3xl leading-snug tracking-tight mb-3">
+                      {activity.title}
+                    </h3>
+                    <p
+                      className={`text-sm leading-relaxed mb-5 line-clamp-2 ${
+                        isLeft ? "text-ink/60" : "text-paper/70"
+                      }`}
+                    >
+                      Real stories from the ground — the kind you can follow,
+                      share, and stand behind.
+                    </p>
+                    <span
+                      className={`inline-flex items-center gap-1.5 text-sm font-semibold ${
+                        isLeft ? "text-ink" : "text-sun"
+                      }`}
+                    >
+                      Read the note
+                      <span className="transition-transform group-hover:translate-x-1">
+                        →
+                      </span>
+                    </span>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+
+          <div className="mt-12 sm:mt-16 text-center px-6">
+            <Link
+              href="/field-notes"
+              className="inline-flex items-center gap-2 border border-paper/25 text-paper px-6 py-3 rounded-full text-sm font-semibold hover:bg-paper/10 transition"
+            >
+              View all Field Notes
+              <span>→</span>
+            </Link>
+          </div>
+        </section>
+      )}
+
+      {/* ─── Wall of Support ──────────────────────────────────── */}
+      {supportPosts.length > 0 && (
+        <section className="bg-paper py-14 sm:py-20 px-6 sm:px-12">
+          <div className="max-w-5xl mx-auto">
+            <p className="font-mono text-clay text-xs tracking-[0.18em] uppercase mb-3">
+              In their words
+            </p>
+            <div className="flex justify-between items-end mb-10 gap-4">
+              <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl tracking-tight">
+                Wall of Support
+              </h2>
+              <Link
+                href="/wall-of-support"
+                className="text-sm font-medium text-ink/50 hover:text-ink transition hidden sm:block"
+              >
+                See all →
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {supportPosts.map((post) => (
+                <div
+                  key={post.id}
+                  className="bg-ink text-paper rounded-2xl rounded-bl-md p-5 sm:p-6"
+                >
+                  <div className="mb-3 opacity-40">
+                    <WaveformDivider className="!h-2.5" />
+                  </div>
+                  <p className="text-sm sm:text-base leading-relaxed mb-4">
+                    &ldquo;{post.content}&rdquo;
+                  </p>
+                  <p className="font-mono text-[11px] text-sun uppercase tracking-wide">
+                    {post.authorName} · {post.platform}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ─── Press ────────────────────────────────────────────── */}
+      {pressMentions.length > 0 && (
+        <section className="bg-paper border-t border-ink/8 py-10 px-6 sm:px-12">
+          <p className="text-center font-mono text-[11px] uppercase tracking-[0.2em] text-ink/35 mb-7">
+            As seen in
+          </p>
+          <div className="flex flex-wrap justify-center items-center gap-x-10 gap-y-6">
+            {pressMentions.map((mention) => (
+              <a
+                key={mention.id}
+                href={mention.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-ink/45 hover:text-ink transition text-sm font-semibold grayscale hover:grayscale-0"
+              >
+                {mention.logoUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={mention.logoUrl} alt={mention.outletName} className="h-7" />
+                ) : (
+                  mention.outletName
+                )}
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ─── Newsletter ───────────────────────────────────────── */}
+      <section className="bg-papyrus text-paper py-16 sm:py-20 px-6 sm:px-12 text-center">
+        <h2 className="font-display font-extrabold text-2xl sm:text-4xl tracking-tight mb-3">
+          Don&apos;t miss what happens next.
+        </h2>
+        <p className="text-paper/70 text-sm sm:text-base max-w-md mx-auto mb-7 leading-relaxed">
+          One email whenever there&apos;s real news — a campaign hits its
+          goal, a new story goes up. No noise.
+        </p>
+        <div className="flex justify-center">
+          <NewsletterForm />
+        </div>
+      </section>
+
+      {/* ─── Closing ──────────────────────────────────────────── */}
+      <section className="grid grid-cols-1 sm:grid-cols-2 min-h-[55vh]">
+        <div className="relative min-h-[40vh] sm:min-h-full">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=1200"
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        </div>
+        <div className="bg-ink text-paper flex flex-col justify-center px-8 sm:px-14 lg:px-16 py-14 sm:py-16">
+          <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl leading-[1.1] tracking-tight mb-7">
+            Join us in rebuilding this beautiful work.
+          </h2>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href="/campaigns"
+              className="bg-sun text-ink px-6 py-3 rounded-full font-semibold text-sm hover:brightness-105 transition"
+            >
+              Give Now
+            </Link>
+            <Link
+              href="/wall-of-support"
+              className="border border-paper/30 text-paper px-6 py-3 rounded-full font-semibold text-sm hover:bg-paper/10 transition"
+            >
+              Follow the Movement
+            </Link>
+          </div>
+        </div>
       </section>
     </div>
   );
