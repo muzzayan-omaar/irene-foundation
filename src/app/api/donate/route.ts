@@ -1,14 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-// PAYMENT GATEWAY: frozen pending KYC/registration (see note below) — swap
-// this import for a real gateway module (flutterwave.ts / paystack.ts / dpo.ts)
-// once one is confirmed working with Irene's foundation's registration status.
-function initiatePayment(): Promise<string> {
+import { donateSchema } from "@/lib/schemas/donate";
+
+// PAYMENT GATEWAY: frozen pending KYC/registration — swap this for a real
+// gateway module (flutterwave.ts / paystack.ts / dpo.ts) once confirmed.
+type InitiatePaymentArgs = {
+  reference: string;
+  amount: number;
+  currency: string;
+  callbackUrl: string;
+  email: string;
+  metadata: {
+    donationId: string;
+    campaignId: string;
+  };
+};
+
+function initiatePayment(_args: InitiatePaymentArgs): Promise<string> {
   throw new Error(
     "Payment gateway not yet configured — donation flow is paused pending Flutterwave/Paystack/DPO account setup."
   );
 }
-import { donateSchema } from "@/lib/schemas/donate";
 
 export async function POST(req: NextRequest) {
   try {
@@ -24,7 +36,6 @@ export async function POST(req: NextRequest) {
 
     const data = parsed.data;
 
-    // Find or create the donor by email — repeat donors get matched, not duplicated
     const donor = await prisma.donor.upsert({
       where: { email: data.email },
       update: {
@@ -40,13 +51,12 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Create the donation as PENDING — the webhook flips this once Flutterwave confirms payment
     const donation = await prisma.donation.create({
       data: {
         amount: data.amount,
         currency: data.currency,
         frequency: data.frequency,
-        paymentMethod: "OTHER", // placeholder — webhook fills in the real method used
+        paymentMethod: "OTHER",
         message: data.message,
         isAnonymous: data.isAnonymous,
         donorId: donor.id,
@@ -54,8 +64,6 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // donation.id doubles as the Paystack reference — unique already, so the
-    // webhook can look the donation straight back up with no extra field needed
     const checkoutLink = await initiatePayment({
       reference: donation.id,
       amount: data.amount,
