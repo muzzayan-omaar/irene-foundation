@@ -1,5 +1,5 @@
 import Link from "next/link";
-import ProgressBar from "./ProgressBar";
+import { WaveformProgress } from "./Waveform";
 
 type CampaignCardProps = {
   slug: string;
@@ -33,7 +33,7 @@ export default function CampaignCard({
       )}
       <div className="p-4 space-y-3">
         <h3 className="font-semibold text-lg">{title}</h3>
-        <ProgressBar percent={progressPercent} />
+        <WaveformProgress percent={progressPercent} />
         <div className="flex justify-between text-sm text-gray-600">
           <span>
             {currency} {raisedAmount.toLocaleString()} raised

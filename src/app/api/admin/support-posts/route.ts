@@ -31,3 +31,33 @@ export async function POST(req: NextRequest) {
   const post = await prisma.supportPost.create({ data: parsed.data });
   return NextResponse.json(post);
 }
+
+export async function PATCH(req: NextRequest) {
+  const { authorized } = await requireAdmin();
+  if (!authorized) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const body = await req.json();
+  const { id, ...rest } = body;
+
+  if (!id) {
+    return NextResponse.json({ error: "Missing post id" }, { status: 400 });
+  }
+
+  const parsed = supportPostSchema.partial().safeParse(rest);
+
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Invalid input", details: parsed.error.flatten() },
+      { status: 400 }
+    );
+  }
+
+  const post = await prisma.supportPost.update({
+    where: { id },
+    data: parsed.data,
+  });
+
+  return NextResponse.json(post);
+}
