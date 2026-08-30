@@ -7,13 +7,10 @@ import { WaveformProgress, WaveformDivider } from "@/components/Waveform";
 import NewsletterForm from "@/components/NewsletterForm";
 import prisma from "@/lib/prisma";
 
-
 const HERO_IMAGE_URL =
   "https://images.unsplash.com/photo-1509099836639-18ba1795216d?q=80&w=1600";
 const HERO_VIDEO_URL: string | null =
   "https://res.cloudinary.com/diszilwhc/video/upload/v1788008803/GeneralBackgroundVideo-opt_f4xf86.mp4";
-const FOUNDER_PHOTO_URL =
-  "https://res.cloudinary.com/diszilwhc/image/upload/v1788011742/46667943_1942558049147382_7934771016423702528_o_oo8auc.jpg";
 
 const PANEL_THEMES = [
   { bg: "bg-ink", text: "text-paper", accent: "text-sun" },
@@ -28,6 +25,8 @@ export default async function Home() {
     supporterCount,
     supportPosts,
     pressMentions,
+    partners,
+    featuredVideo,
     totalRaised,
     activeCampaignCount,
   ] = await Promise.all([
@@ -40,6 +39,14 @@ export default async function Home() {
       take: 3,
     }),
     prisma.pressMention.findMany({ take: 6 }),
+    prisma.partner.findMany({
+      where: { status: "ACTIVE" },
+      take: 8,
+    }),
+    prisma.activity.findFirst({
+      where: { type: "VIDEO", isPublished: true },
+      orderBy: { publishedAt: "desc" },
+    }),
     prisma.donation.aggregate({
       where: { status: "SUCCESSFUL" },
       _sum: { amount: true },
@@ -203,37 +210,94 @@ export default async function Home() {
         );
       })}
 
-      {/* ─── Founder ──────────────────────────────────────────── */}
-      <section className="grid grid-cols-1 md:grid-cols-2">
-        <div className="relative min-h-[50vh] md:min-h-[60vh]">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={FOUNDER_PHOTO_URL}
-            alt="Irene Namatovu"
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-        </div>
-        <div className="bg-paper flex flex-col justify-center px-8 sm:px-14 lg:px-16 py-14 sm:py-16">
-          <p className="font-mono text-clay text-xs tracking-[0.18em] uppercase mb-4">
-            Why this exists
+      {/* ─── How It Works ─────────────────────────────────────── */}
+      <section className="bg-paper px-6 sm:px-12 py-20 sm:py-28">
+        <div className="max-w-5xl mx-auto">
+          <p className="font-mono text-clay text-xs tracking-[0.18em] uppercase mb-4 text-center">
+            Proof over promises
           </p>
-          <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl leading-[1.1] tracking-tight mb-5">
-            A voice for the people who don&apos;t often get heard.
+          <h2 className="font-display font-extrabold text-3xl sm:text-5xl tracking-tight text-center mb-16">
+            How your gift actually moves.
           </h2>
-          <p className="text-ink/65 text-base sm:text-lg mb-8 max-w-md leading-relaxed">
-            {/* TODO: replace with Irene's real founder story once she sends it */}
-            Irene Namatovu started this foundation to turn her platform into
-            direct, visible support for communities across Uganda — not
-            promises, but proof you can follow campaign by campaign.
-          </p>
-          <Link
-            href="/field-notes"
-            className="inline-block border border-ink/15 text-ink px-6 py-3 rounded-full font-semibold text-sm w-fit hover:bg-ink/5 transition"
-          >
-            Read Her Story
-          </Link>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-10">
+            {[
+              {
+                step: "01",
+                title: "You give to a specific campaign",
+                body: "Not a general pool — a named campaign with a real goal you can see filling up.",
+              },
+              {
+                step: "02",
+                title: "We post real updates",
+                body: "Field Notes track exactly what's happening, with photos and video as it unfolds.",
+              },
+              {
+                step: "03",
+                title: "You see the outcome",
+                body: "When a campaign closes, we show what it actually delivered — not just a thank-you.",
+              },
+            ].map((item) => (
+              <div key={item.step}>
+                <p className="font-mono text-4xl text-clay/30 font-semibold mb-4">
+                  {item.step}
+                </p>
+                <h3 className="font-display font-bold text-xl mb-3">{item.title}</h3>
+                <p className="text-ink/60 leading-relaxed">{item.body}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
+
+      {/* ─── Featured Video — only if a real video Field Note exists ──── */}
+      {featuredVideo && featuredVideo.mediaUrls[0] && (
+        <section className="bg-ink py-20 sm:py-28 px-6 sm:px-12">
+          <div className="max-w-4xl mx-auto text-center mb-10">
+            <p className="font-mono text-sun text-xs tracking-[0.18em] uppercase mb-4">
+              Watch
+            </p>
+            <h2 className="font-display font-extrabold text-3xl sm:text-5xl text-paper tracking-tight">
+              {featuredVideo.title}
+            </h2>
+          </div>
+          <div className="max-w-4xl mx-auto aspect-video rounded-2xl overflow-hidden">
+            <video controls className="w-full h-full" src={featuredVideo.mediaUrls[0]} />
+          </div>
+        </section>
+      )}
+
+      {/* ─── Partners — only if real partners exist ──────────────── */}
+      {partners.length > 0 && (
+        <section className="bg-paper border-t border-ink/8 py-12 px-6 sm:px-12">
+          <p className="text-center font-mono text-[11px] uppercase tracking-[0.2em] text-ink/35 mb-7">
+            In partnership with
+          </p>
+          <div className="flex flex-wrap justify-center items-center gap-x-10 gap-y-6">
+            {partners.map((partner) =>
+              partner.website ? (
+                <a
+                  key={partner.id}
+                  href={partner.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-ink/45 hover:text-ink transition grayscale hover:grayscale-0"
+                >
+                  {partner.logoUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={partner.logoUrl} alt={partner.name} className="h-8" />
+                  ) : (
+                    <span className="text-sm font-semibold">{partner.name}</span>
+                  )}
+                </a>
+              ) : (
+                <span key={partner.id} className="text-ink/45 text-sm font-semibold">
+                  {partner.name}
+                </span>
+              )
+            )}
+          </div>
+        </section>
+      )}
 
       {/* ─── Momentum ─────────────────────────────────────────── */}
       <section className="relative bg-sun text-ink px-6 sm:px-12 py-16 sm:py-20 text-center overflow-hidden">
