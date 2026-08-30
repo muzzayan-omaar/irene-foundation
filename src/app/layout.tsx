@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, Inter, IBM_Plex_Mono } from "next/font/google";
+import PageContent from "@/components/PageContent";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import "./globals.css";
@@ -37,7 +38,7 @@ export default function RootLayout({
         className={`${bricolage.variable} ${inter.variable} ${plexMono.variable} font-body bg-paper text-ink antialiased`}
       >
         <SiteNav />
-        {children}
+        <PageContent>{children}</PageContent>
         <SiteFooter />
       </body>
     </html>
