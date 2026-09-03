@@ -15,7 +15,7 @@ import JoinMovementCTA from "@/components/JoinMovementCTA";
 const HERO_IMAGE_URL =
   "https://images.unsplash.com/photo-1509099836639-18ba1795216d?q=80&w=1600";
 const HERO_VIDEO_URL: string | null =
-  "https://res.cloudinary.com/diszilwhc/video/upload/v1788008803/GeneralBackgroundVideo-opt_f4xf86.mp4";
+  "https://res.cloudinary.com/diszilwhc/video/upload/v1788479236/AQMcZMrmNz_QYih3LpRr7IoDr09OBVXvY32QgF47I-SEeOf60uiEAQ1iDa_0QugqNgu_nh4S7MVbhJc8x0xhsZo_svipjg.mp4";
 
 const PANEL_THEMES = [
   { bg: "bg-ink", text: "text-paper", accent: "text-sun" },
