@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
+import { Heart } from "lucide-react";
+
 export default function JoinMovementCTA() {
   const [hasJoined, setHasJoined] = useState<boolean | null>(null);
 
@@ -15,9 +17,10 @@ export default function JoinMovementCTA() {
 
   if (hasJoined) {
     return (
-      <p className="text-sm font-medium opacity-80">
-        Thanks for joining, we&apos;ll be in touch soon. ❤️
-      </p>
+    <p className="text-sm font-medium opacity-80 inline-flex items-center gap-1">
+        Thanks for joining, we&apos;ll be in touch soon.
+        <Heart fill="currentColor" className="size-4" />
+    </p>
     );
   }
 

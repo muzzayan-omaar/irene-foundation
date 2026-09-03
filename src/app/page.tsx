@@ -6,7 +6,7 @@ import { getSupporterCount } from "@/lib/supporters";
 import { WaveformProgress, WaveformDivider } from "@/components/Waveform";
 import NewsletterForm from "@/components/NewsletterForm";
 import prisma from "@/lib/prisma";
-import { BookOpen, Utensils, HeartPulse, ShieldCheck } from "lucide-react";
+import { BookOpen, Utensils, HeartPulse, ShieldCheck, Heart } from "lucide-react";
 
 import FeaturedVideoSection from "@/components/FeaturedVideoSection";
 import CampaignShowcase from "@/components/CampignShowcase";
@@ -110,10 +110,9 @@ export default async function Home() {
           <div className="flex flex-wrap gap-3">
             <Link
               href="/campaigns"
-              className="bg-sun text-ink px-7 py-3 rounded-full font-semibold text-sm hover:brightness-105 transition"
+              className="bg-sun text-ink px-7 py-3 rounded-full font-semibold text-sm hover:brightness-105 transition inline-flex items-center gap-2"
             >
-              Give today ❤
-              
+              Give today <Heart fill="currentColor" className="size-4" />
             </Link>
             <Link
               href="/get-involved"
