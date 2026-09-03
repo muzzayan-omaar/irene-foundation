@@ -14,6 +14,7 @@ const FOOTER_LINKS = [
   { key: "nav_transparency", href: "/transparency" },
   { key: "footer_privacy", href: "/privacy" },
   { key: "footer_terms", href: "/terms" },
+  { key: "nav_partners", href: "/partners" },
 ];
 
 export default function SiteFooter() {

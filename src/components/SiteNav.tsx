@@ -13,6 +13,7 @@ const NAV_LINKS = [
   { key: "nav_fieldNotes", href: "/field-notes" },
   { key: "nav_getInvolved", href: "/get-involved" },
   { key: "nav_wallOfSupport", href: "/wall-of-support" },
+  { key: "nav_partners", href: "/partners" },
   { key: "nav_about", href: "/about" },
   { key: "nav_press", href: "/press" },
   { key: "nav_transparency", href: "/transparency" },

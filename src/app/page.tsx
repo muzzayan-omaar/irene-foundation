@@ -226,40 +226,9 @@ export default async function Home() {
     />
   )}
 
-      {/* ─── Partners — only if real partners exist ──────────────── */}
-      {partners.length > 0 && (
-        <section className="bg-paper border-t border-ink/8 py-12 px-6 sm:px-12">
-          <p className="text-center font-mono text-[11px] uppercase tracking-[0.2em] text-ink/35 mb-7">
-            In partnership with
-          </p>
-          <div className="flex flex-wrap justify-center items-center gap-x-10 gap-y-6">
-            {partners.map((partner) =>
-              partner.website ? (
-                <a
-                  key={partner.id}
-                  href={partner.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-ink/45 hover:text-ink transition grayscale hover:grayscale-0"
-                >
-                  {partner.logoUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={partner.logoUrl} alt={partner.name} className="h-8" />
-                  ) : (
-                    <span className="text-sm font-semibold">{partner.name}</span>
-                  )}
-                </a>
-              ) : (
-                <span key={partner.id} className="text-ink/45 text-sm font-semibold">
-                  {partner.name}
-                </span>
-              )
-            )}
-          </div>
-        </section>
-      )}
+      
 
-      {/* ─── Momentum ─────────────────────────────────────────── */}
+                  {/* ─── Momentum ─────────────────────────────────────────── */}
       <section className="relative bg-sun text-ink px-6 sm:px-12 py-16 sm:py-20 text-center overflow-hidden">
         <p className="font-mono text-xs tracking-[0.2em] uppercase mb-4 opacity-60">
           {SITE_HASHTAG}
@@ -273,10 +242,60 @@ export default async function Home() {
           Every share, every gift, every follow adds a voice. Add yours —
           tag {SITE_HASHTAG} when you do.
         </p>
-        <div className="max-w-xs mx-auto opacity-40">
+        <div className="max-w-xs mx-auto opacity-40 mb-4">
           <WaveformDivider />
         </div>
+
+        {/* Friends of the foundation — only if real partners exist */}
+        {partners.length > 0 && (
+          <div className="mt-10 pt-8 border-t border-ink/10">
+            <p className="text-sm opacity-60 mb-6">
+              With love and support from our friends
+            </p>
+            <div className="flex flex-wrap justify-center items-start gap-x-10 gap-y-8">
+              {partners.map((partner) => {
+                const content = (
+                  <div className="flex flex-col items-center gap-2 w-24">
+                    {partner.logoUrl ? (
+                      <>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={partner.logoUrl}
+                          alt={partner.name}
+                          className="h-8 max-w-24 object-contain"
+                        />
+                        <span className="text-xs opacity-60 text-center leading-tight">
+                          {partner.name}
+                        </span>
+                      </>
+                    ) : (
+                      <span className="text-sm font-semibold opacity-70 text-center leading-tight">
+                        {partner.name}
+                      </span>
+                    )}
+                  </div>
+                );
+
+                return partner.website ? (
+                  <a
+                    key={partner.id}
+                    href={partner.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="opacity-70 hover:opacity-100 transition"
+                  >
+                    {content}
+                  </a>
+                ) : (
+                  <div key={partner.id}>{content}</div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </section>
+
+
 
       {/* ─── Field Notes — staggered blog cards ───────────────── */}
       {featuredActivities.length > 0 && (

@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { label: "Wall of Support", href: "/admin/wall-of-support" },
   { label: "Press", href: "/admin/press" },
   { label: "Inquiries", href: "/admin/inquiries" },
+  { label: "Partners", href: "/admin/partners" },
 ];
 
 export default function AdminDashboardLayout({
