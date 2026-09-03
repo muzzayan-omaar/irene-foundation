@@ -336,19 +336,18 @@ export default async function Home() {
   </div>
 </section>
 
-    {featuredVideos.length > 0 && (
-    <FeaturedVideoSection
-      videos={featuredVideos.map((v) => ({
-        title: v.title,
-        slug: v.slug,
-        mediaUrl: v.mediaUrls[0],
-        posterUrl: v.mediaUrls[1] ?? null,
-        excerpt: v.excerpt ?? null,
-        location: v.location ?? null,
-        publishedAt: v.publishedAt,
-      }))}
-    />
-  )}
+   {featuredVideos.length > 0 && (
+  <FeaturedVideoSection
+    videos={featuredVideos.map((v) => ({
+      title: v.title,
+      slug: v.slug,
+      mediaUrl: v.mediaUrls[0],
+      posterUrl: v.mediaUrls[1] ?? null,
+      excerpt: v.body ?? null, 
+      publishedAt: v.publishedAt,
+    }))}
+  />
+)}
 
       
 
@@ -480,12 +479,11 @@ export default async function Home() {
             : null;
 
           // Truncate description
-          const rawDesc =
-            activity.excerpt || activity.body || activity.content || "";
-          const description =
-            rawDesc.length > 120
-              ? rawDesc.slice(0, 120).trim() + "..."
-              : rawDesc;
+const rawDesc = activity.body || "";
+const description =
+  rawDesc.length > 120
+    ? rawDesc.slice(0, 120).trim() + "..."
+    : rawDesc;
 
           return (
             <Link
