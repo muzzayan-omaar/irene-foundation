@@ -1,14 +1,38 @@
 import prisma from "@/lib/prisma";
 
 export async function getSupporterCount() {
-  const [donorCount, subscriberCount] = await Promise.all([
-    prisma.donor.count(),
-    prisma.newsletterSubscriber.count(),
+  // Pull just emails from each source, then dedupe with a Set — this fixes
+  // the earlier double-counting issue (same person donating AND subscribing)
+  // and folds in Volunteer/Partner inquiries so the number actually reflects
+  // everyone the "join the movement" CTA invites, not just donors/subscribers.
+  const [donors, subscribers, inquiries] = await Promise.all([
+    prisma.donor.findMany({ select: { email: true } }),
+    prisma.newsletterSubscriber.findMany({ select: { email: true } }),
+    prisma.inquiry.findMany({
+      where: { type: { in: ["VOLUNTEER", "PARTNER"] } },
+      select: { email: true },
+    }),
   ]);
 
-  // Simple sum for now — donors and subscribers may overlap (same person, same
-  // email, both categories), so this is a "supporter touchpoints" figure, not
-  // a strict unique-people count. Fine for a growth-feel number; worth revisiting
-  // with proper deduplication once volume is real.
-  return donorCount + subscriberCount;
+  const uniqueEmails = new Set([
+    ...donors.map((d) => d.email),
+    ...subscribers.map((s) => s.email),
+    ...inquiries.map((i) => i.email),
+  ]);
+
+  return uniqueEmails.size;
+}
+
+// For the Transparency page — a real classified breakdown, separate from
+// the single homepage number, since detail belongs there, not on the homepage.
+export async function getSupporterBreakdown() {
+  const [donorCount, subscriberCount, volunteerCount, partnerCount] =
+    await Promise.all([
+      prisma.donor.count(),
+      prisma.newsletterSubscriber.count(),
+      prisma.inquiry.count({ where: { type: "VOLUNTEER" } }),
+      prisma.inquiry.count({ where: { type: "PARTNER" } }),
+    ]);
+
+  return { donorCount, subscriberCount, volunteerCount, partnerCount };
 }

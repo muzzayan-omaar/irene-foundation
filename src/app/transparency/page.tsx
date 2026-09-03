@@ -1,4 +1,4 @@
-import { getSupporterCount } from "@/lib/supporters";
+import { getSupporterCount, getSupporterBreakdown } from "@/lib/supporters";
 import prisma from "@/lib/prisma";
 
 export default async function TransparencyPage() {
@@ -7,6 +7,7 @@ export default async function TransparencyPage() {
     _sum: { amount: true },
   });
   const supporterCount = await getSupporterCount();
+  const breakdown = await getSupporterBreakdown();
 
   return (
     <div className="max-w-3xl mx-auto px-6 sm:px-12 py-16 sm:py-20 space-y-12">
@@ -35,6 +36,20 @@ export default async function TransparencyPage() {
           </p>
           <p className="text-sm text-ink/50 mt-1">Supporters</p>
         </div>
+      </div>
+
+      <div className="grid grid-cols-4 gap-3">
+        {[
+          { label: "Donors", value: breakdown.donorCount },
+          { label: "Subscribers", value: breakdown.subscriberCount },
+          { label: "Volunteers", value: breakdown.volunteerCount },
+          { label: "Partners", value: breakdown.partnerCount },
+        ].map((item) => (
+          <div key={item.label} className="text-center">
+            <p className="font-mono text-lg font-semibold">{item.value}</p>
+            <p className="text-xs text-ink/45 mt-0.5">{item.label}</p>
+          </div>
+        ))}
       </div>
 
       {/* TODO: Replace this entire section with Irene's real financial

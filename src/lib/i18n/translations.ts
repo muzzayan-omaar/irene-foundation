@@ -11,7 +11,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     nav_about: "About",
     nav_press: "Press",
     nav_transparency: "Transparency",
-    nav_donate: "Donate",
+    nav_donate: "Donate to a Campaign",
     hero_cta_donate: "Give Now",
     hero_cta_proof: "See the Proof",
     hero_subtitle:
@@ -71,7 +71,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     nav_about: "À propos",
     nav_press: "Presse",
     nav_transparency: "Transparence",
-    nav_donate: "Faire un don",
+    nav_donate: "Faire un don à une campagne",
     hero_cta_donate: "Faire un don",
     hero_cta_proof: "Voir les preuves",
     hero_subtitle:

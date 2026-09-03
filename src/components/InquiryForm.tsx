@@ -40,6 +40,9 @@ export default function InquiryForm({
     if (res.ok) {
       setStatus("done");
       showToast("Message sent — we'll be in touch");
+      if (type === "VOLUNTEER" || type === "PARTNER") {
+        localStorage.setItem("hasJoinedMovement", "true");
+      }
     } else {
       setStatus("error");
       showToast("Something went wrong — try again", "error");

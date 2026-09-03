@@ -6,9 +6,11 @@ import { getSupporterCount } from "@/lib/supporters";
 import { WaveformProgress, WaveformDivider } from "@/components/Waveform";
 import NewsletterForm from "@/components/NewsletterForm";
 import prisma from "@/lib/prisma";
+import { BookOpen, Utensils, HeartPulse, ShieldCheck } from "lucide-react";
 
 import FeaturedVideoSection from "@/components/FeaturedVideoSection";
 import CampaignShowcase from "@/components/CampignShowcase";
+import JoinMovementCTA from "@/components/JoinMovementCTA";
 
 const HERO_IMAGE_URL =
   "https://images.unsplash.com/photo-1509099836639-18ba1795216d?q=80&w=1600";
@@ -102,8 +104,7 @@ export default async function Home() {
           </h1>
 
           <p className="text-paper/80 text-base sm:text-lg max-w-xl mb-9 leading-relaxed">
-            Real work, real voices, real proof — every gift here goes toward
-            people you can actually see and stories you can actually follow.
+            Supporting women, children, and communities across Uganda through education, food, healthcare, entertainment, and protection.
           </p>
 
           <div className="flex flex-wrap gap-3">
@@ -111,13 +112,14 @@ export default async function Home() {
               href="/campaigns"
               className="bg-sun text-ink px-7 py-3 rounded-full font-semibold text-sm hover:brightness-105 transition"
             >
-              Give Now
+              Give today ❤
+              
             </Link>
             <Link
-              href="/field-notes"
+              href="/get-involved"
               className="border border-paper/35 text-paper px-7 py-3 rounded-full font-semibold text-sm hover:bg-paper/10 transition"
             >
-              See the Proof
+              Get involved
             </Link>
           </div>
         </div>
@@ -173,44 +175,150 @@ export default async function Home() {
         />
       )}
 
-      {/* ─── How It Works ─────────────────────────────────────── */}
-      <section className="bg-paper px-6 sm:px-12 py-20 sm:py-28">
-        <div className="max-w-5xl mx-auto">
-          <p className="font-mono text-clay text-xs tracking-[0.18em] uppercase mb-4 text-center">
-            Proof over promises
-          </p>
-          <h2 className="font-display font-extrabold text-3xl sm:text-5xl tracking-tight text-center mb-16">
-            How your gift actually moves.
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-10">
+     {/* ─── What We Do ───────────────────────────────────────── */}
+<section className="bg-paper px-6 sm:px-12 py-20 sm:py-28 overflow-hidden">
+  <div className="max-w-5xl mx-auto mb-16">
+    <p className="font-mono text-clay text-xs tracking-[0.18em] uppercase mb-4 text-center">
+      Our focus
+    </p>
+    <h2 className="font-display font-extrabold text-3xl sm:text-5xl tracking-tight text-center text-ink">
+      What We Deliver
+    </h2>
+  </div>
+
+  {/* ── Dual Row Marquee ── */}
+  <div className="relative">
+    {/* Edge fade masks */}
+    <div className="pointer-events-none absolute inset-y-0 left-0 w-24 sm:w-40 bg-gradient-to-r from-paper to-transparent z-20" />
+    <div className="pointer-events-none absolute inset-y-0 right-0 w-24 sm:w-40 bg-gradient-to-l from-paper to-transparent z-20" />
+
+    {/* ── Row 1 →  */}
+    <div className="group mb-8 overflow-hidden">
+      <div className="flex w-max animate-marquee-left group-hover:[animation-play-state:paused]">
+        {[...Array(2)].map((_, i) => (
+          <div key={i} className="flex gap-6 pr-6">
             {[
               {
-                step: "01",
-                title: "You give to a specific campaign",
-                body: "Not a general pool — a named campaign with a real goal you can see filling up.",
+                img: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop",
+                Icon: BookOpen,
+                title: "Education",
+                body: "Helping children and women access the education that opens doors.",
               },
               {
-                step: "02",
-                title: "We post real updates",
-                body: "Field Notes track exactly what's happening, with photos and video as it unfolds.",
+                img: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=400&h=300&fit=crop",
+                Icon: Utensils,
+                title: "Food",
+                body: "Meals and food security for families who need it most.",
               },
               {
-                step: "03",
-                title: "You see the outcome",
-                body: "When a campaign closes, we show what it actually delivered — not just a thank-you.",
+                img: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=300&fit=crop",
+                Icon: HeartPulse,
+                title: "Healthcare",
+                body: "Access to healthcare and wellbeing support for vulnerable communities.",
+              },
+              {
+                img: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=400&h=300&fit=crop",
+                Icon: ShieldCheck,
+                title: "Protection",
+                body: "Standing against violence and exploitation, and protecting the rights of women and children.",
               },
             ].map((item) => (
-              <div key={item.step}>
-                <p className="font-mono text-4xl text-clay/30 font-semibold mb-4">
-                  {item.step}
-                </p>
-                <h3 className="font-display font-bold text-xl mb-3">{item.title}</h3>
-                <p className="text-ink/60 leading-relaxed">{item.body}</p>
+              <div
+                key={item.title}
+                className="flex w-[420px] sm:w-[480px] h-40 rounded-2xl overflow-hidden shadow-md"
+              >
+                {/* Image + soft sun fade */}
+                <div className="relative w-2/5 h-full flex-shrink-0">
+                  <img
+                    src={item.img}
+                    alt={item.title}
+                    className="w-full h-full object-cover"
+                  />
+                  {/* Blur-fade from sun into the photo */}
+                  <div className="absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-sun via-sun/60 to-transparent" />
+                </div>
+
+                {/* Content – sun */}
+                <div className="w-3/5 p-5 flex flex-col justify-center bg-sun text-ink">
+                  <item.Icon className="text-ink mb-2" size={22} strokeWidth={1.75} />
+                  <h3 className="font-display font-bold text-lg mb-1.5 text-ink">
+                    {item.title}
+                  </h3>
+                  <p className="text-ink/70 text-sm leading-relaxed line-clamp-2">
+                    {item.body}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
-        </div>
-      </section>
+        ))}
+      </div>
+    </div>
+
+    {/* ── Row 2 ← (swapped layout) ── */}
+    <div className="group overflow-hidden">
+      <div className="flex w-max animate-marquee-right group-hover:[animation-play-state:paused]">
+        {[...Array(2)].map((_, i) => (
+          <div key={i} className="flex gap-6 pr-6">
+            {[
+              {
+                img: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=300&fit=crop",
+                Icon: HeartPulse,
+                title: "Healthcare",
+                body: "Access to healthcare and wellbeing support for vulnerable communities.",
+              },
+              {
+                img: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=400&h=300&fit=crop",
+                Icon: ShieldCheck,
+                title: "Protection",
+                body: "Standing against violence and exploitation, and protecting the rights of women and children.",
+              },
+              {
+                img: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop",
+                Icon: BookOpen,
+                title: "Education",
+                body: "Helping children and women access the education that opens doors.",
+              },
+              {
+                img: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=400&h=300&fit=crop",
+                Icon: Utensils,
+                title: "Food",
+                body: "Meals and food security for families who need it most.",
+              },
+            ].map((item) => (
+              <div
+                key={item.title}
+                className="flex w-[420px] sm:w-[480px] h-40 rounded-2xl overflow-hidden shadow-md"
+              >
+                {/* Content – sun (left) */}
+                <div className="w-3/5 p-5 flex flex-col justify-center bg-sun text-ink order-1">
+                  <item.Icon className="text-ink mb-2" size={22} strokeWidth={1.75} />
+                  <h3 className="font-display font-bold text-lg mb-1.5 text-ink">
+                    {item.title}
+                  </h3>
+                  <p className="text-ink/70 text-sm leading-relaxed line-clamp-2">
+                    {item.body}
+                  </p>
+                </div>
+
+                {/* Image + soft sun fade (right) */}
+                <div className="relative w-2/5 h-full flex-shrink-0 order-2">
+                  <img
+                    src={item.img}
+                    alt={item.title}
+                    className="w-full h-full object-cover"
+                  />
+                  {/* Blur-fade from sun into the photo */}
+                  <div className="absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-sun via-sun/60 to-transparent" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
 
     {featuredVideos.length > 0 && (
     <FeaturedVideoSection
@@ -228,7 +336,7 @@ export default async function Home() {
 
       
 
-                  {/* ─── Momentum ─────────────────────────────────────────── */}
+                       {/* ─── Momentum ─────────────────────────────────────────── */}
       <section className="relative bg-sun text-ink px-6 sm:px-12 py-16 sm:py-20 text-center overflow-hidden">
         <p className="font-mono text-xs tracking-[0.2em] uppercase mb-4 opacity-60">
           {SITE_HASHTAG}
@@ -242,6 +350,11 @@ export default async function Home() {
           Every share, every gift, every follow adds a voice. Add yours —
           tag {SITE_HASHTAG} when you do.
         </p>
+
+        <div className="mb-8">
+          <JoinMovementCTA />
+        </div>
+
         <div className="max-w-xs mx-auto opacity-40 mb-4">
           <WaveformDivider />
         </div>
@@ -294,6 +407,7 @@ export default async function Home() {
           </div>
         )}
       </section>
+
 
 
 
