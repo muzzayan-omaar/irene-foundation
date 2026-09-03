@@ -6,41 +6,44 @@ export default async function PressPage() {
   });
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-16">
-      <h1 className="text-3xl font-bold mb-2">Press & Media</h1>
-      <p className="text-gray-600 mb-10">
+    <div className="max-w-3xl mx-auto px-6 sm:px-12 py-16 sm:py-20">
+      <p className="font-mono text-clay text-xs tracking-[0.18em] uppercase mb-4">
+        Coverage
+      </p>
+      <h1 className="font-display font-extrabold text-4xl sm:text-6xl tracking-tight mb-6">
+        Press &amp; Media
+      </h1>
+      <p className="text-ink/60 text-lg max-w-xl mb-14">
         Coverage of Irene&apos;s work and the foundation&apos;s mission.
       </p>
 
       {mentions.length === 0 ? (
-        <p className="text-gray-500">
+        <p className="text-ink/40">
           No press coverage listed yet — check back as the foundation grows.
         </p>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {mentions.map((mention) => (
             <a
               key={mention.id}
               href={mention.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="block p-4 rounded-lg border border-gray-100 hover:shadow-md transition-shadow"
+              className="flex items-center gap-4 p-5 rounded-xl border border-ink/10 hover:border-ink/25 transition"
             >
-              <div className="flex items-center gap-3">
-                {mention.logoUrl && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={mention.logoUrl}
-                    alt={mention.outletName}
-                    className="h-8 w-auto object-contain"
-                  />
-                )}
-                <div>
-                  <p className="text-xs text-gray-400 uppercase tracking-wide">
-                    {mention.outletName}
-                  </p>
-                  <p className="font-medium">{mention.title}</p>
-                </div>
+              {mention.logoUrl && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={mention.logoUrl}
+                  alt={mention.outletName}
+                  className="h-8 w-auto object-contain"
+                />
+              )}
+              <div>
+                <p className="font-mono text-xs text-clay uppercase tracking-wide mb-1">
+                  {mention.outletName}
+                </p>
+                <p className="font-display font-semibold text-lg">{mention.title}</p>
               </div>
             </a>
           ))}

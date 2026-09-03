@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import CloudinaryUploadButton from "./CloudinaryUploadButton";
+import { useToast } from "@/components/ui/ToastProvider";
 
 type SupportPostFormValues = {
   id?: string;
@@ -33,6 +34,7 @@ export default function SupportPostForm({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const { showToast } = useToast();
 
   function update<K extends keyof SupportPostFormValues>(
     key: K,
@@ -55,11 +57,12 @@ export default function SupportPostForm({
     const result = await res.json();
 
     if (!res.ok) {
-      setError(result.error || "Something went wrong");
+      showToast(result.error || "Something went wrong", "error");
       setSubmitting(false);
       return;
     }
 
+    showToast("Saved successfully");
     router.push("/admin/wall-of-support");
     router.refresh();
   }
@@ -142,7 +145,7 @@ export default function SupportPostForm({
       <button
         type="submit"
         disabled={submitting}
-        className="bg-gray-900 text-white px-5 py-2.5 rounded-md text-sm font-medium disabled:opacity-50"
+        className="bg-gray-900 text-white px-5 py-2.5 rounded-md text-sm font-medium active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {submitting ? "Saving..." : isEditing ? "Save Changes" : "Add Post"}
       </button>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import CloudinaryUploadButton from "./CloudinaryUploadButton";
+import { useToast } from "@/components/ui/ToastProvider";
 
 type ActivityFormValues = {
   id?: string;
@@ -37,6 +38,7 @@ export default function ActivityForm({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const { showToast } = useToast();
 
   function update<K extends keyof ActivityFormValues>(
     key: K,
@@ -68,11 +70,12 @@ export default function ActivityForm({
     const result = await res.json();
 
     if (!res.ok) {
-      setError(result.error || "Something went wrong");
+      showToast(result.error || "Something went wrong", "error");
       setSubmitting(false);
       return;
     }
 
+    showToast("Saved successfully");
     router.push("/admin/activities");
     router.refresh();
   }
@@ -128,23 +131,23 @@ export default function ActivityForm({
         />
       </div>
 
-        <div>
+      <div>
         <label className="block text-sm font-medium mb-1">Media</label>
         <div className="flex items-center gap-3 mb-2">
-            <CloudinaryUploadButton
+          <CloudinaryUploadButton
             label="Upload Media"
             onUpload={(url) =>
-                update(
+              update(
                 "mediaUrls",
                 values.mediaUrls ? `${values.mediaUrls}, ${url}` : url
-                )
+              )
             }
-            />
+          />
         </div>
         {values.mediaUrls && (
-            <p className="text-xs text-gray-400 break-all">{values.mediaUrls}</p>
+          <p className="text-xs text-gray-400 break-all">{values.mediaUrls}</p>
         )}
-        </div>
+      </div>
 
       <div>
         <label className="block text-sm font-medium mb-1">
@@ -178,7 +181,7 @@ export default function ActivityForm({
       <button
         type="submit"
         disabled={submitting}
-        className="bg-gray-900 text-white px-5 py-2.5 rounded-md text-sm font-medium disabled:opacity-50"
+        className="bg-gray-900 text-white px-5 py-2.5 rounded-md text-sm font-medium active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {submitting ? "Saving..." : isEditing ? "Save Changes" : "Create Activity"}
       </button>

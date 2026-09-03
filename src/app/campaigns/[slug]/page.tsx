@@ -3,6 +3,8 @@ import { getCampaignBySlug } from "@/lib/campaigns";
 import { WaveformProgress } from "@/components/Waveform";
 import ShareButtons from "@/components/ShareButtons";
 import DonateForm from "@/components/DonateForm";
+import { getServerLocale } from "@/lib/i18n/getServerLocale";
+import { translate } from "@/lib/i18n/translations";
 
 export default async function CampaignDetailPage({
   params,
@@ -10,6 +12,8 @@ export default async function CampaignDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  const locale = await getServerLocale();
+  const t = (key: string) => translate(locale, key);
   const campaign = await getCampaignBySlug(slug);
 
   if (!campaign) notFound();
@@ -30,6 +34,9 @@ export default async function CampaignDetailPage({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
         <div className="md:col-span-2 space-y-8">
           <div>
+            <p className="font-mono text-clay text-xs tracking-widest uppercase mb-4">
+              {t("campaignDetail_activeLabel")}
+            </p>
             <h1 className="font-display font-extrabold text-4xl sm:text-5xl mb-6">
               {campaign.title}
             </h1>
@@ -41,7 +48,7 @@ export default async function CampaignDetailPage({
           {recentDonors.length > 0 && (
             <div>
               <h2 className="font-display font-semibold text-xl mb-4">
-                Recent Supporters
+                {t("campaignDetail_recentSupporters")}
               </h2>
               <ul className="space-y-3">
                 {recentDonors.map((donation) => (
@@ -78,10 +85,12 @@ export default async function CampaignDetailPage({
                 {campaign.currency} {campaign.raisedAmount.toLocaleString()}
               </span>
               <span className="text-ink/40">
-                of {campaign.currency} {campaign.goalAmount.toString()}
+                {t("label_of")} {campaign.currency} {campaign.goalAmount.toString()}
               </span>
             </div>
-            <p className="text-xs text-ink/40">{campaign.donorCount} donors</p>
+            <p className="text-xs text-ink/40">
+              {campaign.donorCount} {t("label_donors")}
+            </p>
 
             <ShareButtons
               title={campaign.title}
@@ -90,8 +99,7 @@ export default async function CampaignDetailPage({
 
             {campaign.status === "COMPLETED" ? (
               <div className="pt-4 border-t border-ink/10 text-sm text-ink/60">
-                This campaign has been completed — thank you to everyone who
-                gave. Check Field Notes for what your support made possible.
+                {t("campaignDetail_completedNote")}
               </div>
             ) : (
               <div className="pt-4 border-t border-ink/10">

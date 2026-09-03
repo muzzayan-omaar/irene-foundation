@@ -11,6 +11,7 @@ export const donateSchema = z.object({
   frequency: z.enum(["ONE_TIME", "MONTHLY"]).default("ONE_TIME"),
   message: z.string().optional(),
   isAnonymous: z.boolean().default(false),
+  isSubscribed: z.boolean().default(false), // explicit opt-in, never silent
 });
 
 export type DonateFormInput = z.input<typeof donateSchema>;

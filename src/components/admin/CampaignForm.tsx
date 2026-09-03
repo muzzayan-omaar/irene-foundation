@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import CloudinaryUploadButton from "./CloudinaryUploadButton";
+import { useToast } from "@/components/ui/ToastProvider";
 
 type CampaignFormValues = {
   id?: string;
@@ -35,6 +35,7 @@ export default function CampaignForm({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const { showToast } = useToast();
 
   function update<K extends keyof CampaignFormValues>(
     key: K,
@@ -58,10 +59,12 @@ export default function CampaignForm({
 
     if (!res.ok) {
       setError(result.error || "Something went wrong");
+      showToast(result.error || "Something went wrong", "error");
       setSubmitting(false);
       return;
     }
 
+    showToast(isEditing ? "Campaign updated" : "Campaign created");
     router.push("/admin/campaigns");
     router.refresh();
   }
@@ -103,17 +106,17 @@ export default function CampaignForm({
         />
       </div>
 
-    <div>
-    <label className="block text-sm font-medium mb-1">Cover Image</label>
-    <div className="flex items-center gap-3">
-        <CloudinaryUploadButton onUpload={(url) => update("coverImage", url)} />
-        {values.coverImage && (
-        <span className="text-xs text-gray-400 truncate max-w-[200px]">
-            {values.coverImage}
-        </span>
-        )}
-    </div>
-    </div>
+      <div>
+        <label className="block text-sm font-medium mb-1">
+          Cover Image URL (Cloudinary)
+        </label>
+        <input
+          value={values.coverImage}
+          onChange={(e) => update("coverImage", e.target.value)}
+          placeholder="https://res.cloudinary.com/..."
+          className="w-full rounded-md border border-gray-200 px-3 py-2 text-sm"
+        />
+      </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
@@ -157,7 +160,7 @@ export default function CampaignForm({
       <button
         type="submit"
         disabled={submitting}
-        className="bg-gray-900 text-white px-5 py-2.5 rounded-md text-sm font-medium disabled:opacity-50"
+        className="bg-gray-900 text-white px-5 py-2.5 rounded-md text-sm font-medium hover:bg-gray-800 active:scale-95 transition disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {submitting ? "Saving..." : isEditing ? "Save Changes" : "Create Campaign"}
       </button>

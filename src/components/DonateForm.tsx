@@ -4,12 +4,14 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { donateSchema, type DonateFormInput, type DonateInput } from "@/lib/schemas/donate";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 const PRESET_AMOUNTS = [10, 25, 50, 100];
 
 export default function DonateForm({ campaignId }: { campaignId?: string }) {
   const [submitting, setSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  const { t } = useLocale();
 
   const {
     register,
@@ -70,7 +72,7 @@ export default function DonateForm({ campaignId }: { campaignId?: string }) {
               : "bg-white text-gray-600"
           }`}
         >
-          Give Once
+          {t("donate_giveOnce")}
         </button>
         <button
           type="button"
@@ -81,14 +83,14 @@ export default function DonateForm({ campaignId }: { campaignId?: string }) {
               : "bg-white text-gray-600"
           }`}
         >
-          Give Monthly
+          {t("donate_giveMonthly")}
         </button>
       </div>
 
       {/* Amount presets */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Amount (USD)
+          {t("donate_amountLabel")}
         </label>
         <div className="grid grid-cols-4 gap-2 mb-2">
           {PRESET_AMOUNTS.map((amt) => (
@@ -106,10 +108,14 @@ export default function DonateForm({ campaignId }: { campaignId?: string }) {
             </button>
           ))}
         </div>
+        <label htmlFor="donate-amount" className="sr-only">
+          {t("donate_customAmount")}
+        </label>
         <input
+          id="donate-amount"
           type="number"
           step="0.01"
-          placeholder="Custom amount"
+          placeholder={t("donate_customAmount")}
           {...register("amount")}
           className="w-full rounded-md border border-gray-200 px-3 py-2 text-sm"
         />
@@ -121,9 +127,13 @@ export default function DonateForm({ campaignId }: { campaignId?: string }) {
       {/* Donor details */}
       <div className="space-y-3">
         <div>
+          <label htmlFor="donate-fullName" className="sr-only">
+            {t("donate_fullName")}
+          </label>
           <input
+            id="donate-fullName"
             type="text"
-            placeholder="Full name"
+            placeholder={t("donate_fullName")}
             {...register("fullName")}
             className="w-full rounded-md border border-gray-200 px-3 py-2 text-sm"
           />
@@ -133,9 +143,13 @@ export default function DonateForm({ campaignId }: { campaignId?: string }) {
         </div>
 
         <div>
+          <label htmlFor="donate-email" className="sr-only">
+            {t("donate_email")}
+          </label>
           <input
+            id="donate-email"
             type="email"
-            placeholder="Email"
+            placeholder={t("donate_email")}
             {...register("email")}
             className="w-full rounded-md border border-gray-200 px-3 py-2 text-sm"
           />
@@ -144,22 +158,34 @@ export default function DonateForm({ campaignId }: { campaignId?: string }) {
           )}
         </div>
 
+        <label htmlFor="donate-phone" className="sr-only">
+          {t("donate_phone")}
+        </label>
         <input
+          id="donate-phone"
           type="tel"
-          placeholder="Phone (optional, needed for Mobile Money)"
+          placeholder={t("donate_phone")}
           {...register("phone")}
           className="w-full rounded-md border border-gray-200 px-3 py-2 text-sm"
         />
 
+        <label htmlFor="donate-country" className="sr-only">
+          {t("donate_country")}
+        </label>
         <input
+          id="donate-country"
           type="text"
-          placeholder="Country (optional)"
+          placeholder={t("donate_country")}
           {...register("country")}
           className="w-full rounded-md border border-gray-200 px-3 py-2 text-sm"
         />
 
+        <label htmlFor="donate-message" className="sr-only">
+          {t("donate_message")}
+        </label>
         <textarea
-          placeholder="Leave a message of support (optional)"
+          id="donate-message"
+          placeholder={t("donate_message")}
           {...register("message")}
           rows={3}
           className="w-full rounded-md border border-gray-200 px-3 py-2 text-sm"
@@ -167,7 +193,12 @@ export default function DonateForm({ campaignId }: { campaignId?: string }) {
 
         <label className="flex items-center gap-2 text-sm text-gray-600">
           <input type="checkbox" {...register("isAnonymous")} />
-          Give anonymously
+          {t("donate_anonymous")}
+        </label>
+
+        <label className="flex items-center gap-2 text-sm text-gray-600">
+          <input type="checkbox" {...register("isSubscribed")} />
+          {t("donate_subscribe")}
         </label>
       </div>
 
@@ -180,7 +211,7 @@ export default function DonateForm({ campaignId }: { campaignId?: string }) {
         disabled={submitting}
         className="w-full bg-gray-900 text-white py-3 rounded-md font-medium disabled:opacity-50"
       >
-        {submitting ? "Redirecting to checkout..." : "Donate Now"}
+        {submitting ? t("donate_submitting") : t("donate_submit")}
       </button>
     </form>
   );

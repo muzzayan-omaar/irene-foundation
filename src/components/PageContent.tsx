@@ -12,6 +12,6 @@ export default function PageContent({ children }: { children: React.ReactNode })
   const isAdmin = pathname?.startsWith("/admin");
 
   return (
-    <main className={isHome || isAdmin ? "" : "pt-[72px]"}>{children}</main>
+    <main id="main-content" className={isHome || isAdmin ? "" : "pt-[72px]"}>{children}</main>
   );
 }

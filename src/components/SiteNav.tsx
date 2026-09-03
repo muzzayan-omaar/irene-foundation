@@ -3,22 +3,26 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Globe } from "lucide-react";
 import { SITE_NAME } from "@/lib/config";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { locales } from "@/lib/i18n/translations";
 
 const NAV_LINKS = [
-  { label: "Campaigns", href: "/campaigns" },
-  { label: "Field Notes", href: "/field-notes" },
-  { label: "Wall of Support", href: "/wall-of-support" },
-  { label: "About", href: "/about" },
-  { label: "Press", href: "/press" },
-  { label: "Transparency", href: "/transparency" },
+  { key: "nav_campaigns", href: "/campaigns" },
+  { key: "nav_fieldNotes", href: "/field-notes" },
+  { key: "nav_getInvolved", href: "/get-involved" },
+  { key: "nav_wallOfSupport", href: "/wall-of-support" },
+  { key: "nav_about", href: "/about" },
+  { key: "nav_press", href: "/press" },
+  { key: "nav_transparency", href: "/transparency" },
 ];
 
 export default function SiteNav() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+  const { locale, setLocale, t } = useLocale();
 
   useEffect(() => {
     function handleScroll() {
@@ -47,11 +51,19 @@ export default function SiteNav() {
         </Link>
 
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => setLocale(locale === "en" ? "fr" : "en")}
+            aria-label="Switch language"
+            className="flex items-center gap-1 text-sm font-medium hover:opacity-70 transition"
+          >
+            <Globe size={16} />
+            {locale.toUpperCase()}
+          </button>
           <Link
             href="/campaigns"
             className="bg-sun text-ink px-5 py-2 rounded-full text-sm font-semibold hover:brightness-105 transition"
           >
-            Donate
+            {t("nav_donate")}
           </Link>
           <button
             onClick={() => setOpen(!open)}
@@ -72,7 +84,7 @@ export default function SiteNav() {
               onClick={() => setOpen(false)}
               className="text-base font-medium text-paper hover:text-sun transition"
             >
-              {link.label}
+              {t(link.key)}
             </Link>
           ))}
         </div>

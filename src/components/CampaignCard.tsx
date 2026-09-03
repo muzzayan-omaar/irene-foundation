@@ -10,7 +10,10 @@ type CampaignCardProps = {
   raisedAmount: number;
   progressPercent: number;
   donorCount: number;
+  labels?: { raised: string; of: string; donors: string };
 };
+
+const DEFAULT_LABELS = { raised: "raised", of: "of", donors: "donors" };
 
 export default function CampaignCard({
   slug,
@@ -21,6 +24,7 @@ export default function CampaignCard({
   raisedAmount,
   progressPercent,
   donorCount,
+  labels = DEFAULT_LABELS,
 }: CampaignCardProps) {
   return (
     <Link
@@ -46,13 +50,15 @@ export default function CampaignCard({
         <WaveformProgress percent={progressPercent} />
         <div className="flex justify-between text-sm">
           <span className="font-mono font-medium text-clay">
-            {currency} {raisedAmount.toLocaleString()}
+            {currency} {raisedAmount.toLocaleString()} {labels.raised}
           </span>
           <span className="text-ink/40">
-            of {currency} {goalAmount.toNumber().toLocaleString()}
+            {labels.of} {currency} {goalAmount.toNumber().toLocaleString()}
           </span>
         </div>
-        <p className="text-xs text-ink/40">{donorCount} donors</p>
+        <p className="text-xs text-ink/40">
+          {donorCount} {labels.donors}
+        </p>
       </div>
     </Link>
   );

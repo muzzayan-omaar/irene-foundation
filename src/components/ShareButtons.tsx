@@ -2,6 +2,7 @@
 
 import { Share2 } from "lucide-react";
 import { SITE_HASHTAG, SITE_TAGLINE } from "@/lib/config";
+import { useToast } from "@/components/ui/ToastProvider";
 
 export default function ShareButtons({
   title,
@@ -10,6 +11,7 @@ export default function ShareButtons({
   title: string;
   url: string;
 }) {
+  const { showToast } = useToast();
   const shareText = `${title} — ${SITE_TAGLINE} ${SITE_HASHTAG}`;
 
   const links = [
@@ -33,7 +35,7 @@ export default function ShareButtons({
 
   async function copyLink() {
     await navigator.clipboard.writeText(`${shareText} ${url}`);
-    alert("Copied to clipboard!");
+    showToast("Link copied to clipboard");
   }
 
   return (

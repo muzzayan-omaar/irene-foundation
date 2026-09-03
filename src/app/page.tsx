@@ -7,6 +7,8 @@ import { WaveformProgress, WaveformDivider } from "@/components/Waveform";
 import NewsletterForm from "@/components/NewsletterForm";
 import prisma from "@/lib/prisma";
 
+import FeaturedVideoSection from "@/components/FeaturedVideoSection";
+
 const HERO_IMAGE_URL =
   "https://images.unsplash.com/photo-1509099836639-18ba1795216d?q=80&w=1600";
 const HERO_VIDEO_URL: string | null =
@@ -20,39 +22,41 @@ const PANEL_THEMES = [
 
 export default async function Home() {
   const [
-    campaigns,
-    activities,
-    supporterCount,
-    supportPosts,
-    pressMentions,
-    partners,
-    featuredVideo,
-    totalRaised,
-    activeCampaignCount,
-  ] = await Promise.all([
-    listActiveCampaigns(),
-    listPublishedActivities("ALL"),
-    getSupporterCount(),
-    prisma.supportPost.findMany({
-      where: { isFeatured: true },
-      orderBy: { createdAt: "desc" },
-      take: 3,
-    }),
-    prisma.pressMention.findMany({ take: 6 }),
-    prisma.partner.findMany({
-      where: { status: "ACTIVE" },
-      take: 8,
-    }),
-    prisma.activity.findFirst({
-      where: { type: "VIDEO", isPublished: true },
-      orderBy: { publishedAt: "desc" },
-    }),
-    prisma.donation.aggregate({
-      where: { status: "SUCCESSFUL" },
-      _sum: { amount: true },
-    }),
-    prisma.campaign.count({ where: { status: "ACTIVE" } }),
-  ]);
+  campaigns,
+  activities,
+  supporterCount,
+  supportPosts,
+  pressMentions,
+  partners,
+  featuredVideos,        
+  totalRaised,
+  activeCampaignCount,
+] = await Promise.all([
+  listActiveCampaigns(),
+  listPublishedActivities("ALL"),
+  getSupporterCount(),
+  prisma.supportPost.findMany({
+    where: { isFeatured: true },
+    orderBy: { createdAt: "desc" },
+    take: 3,
+  }),
+  prisma.pressMention.findMany({ take: 6 }),
+  prisma.partner.findMany({
+    where: { status: "ACTIVE" },
+    take: 8,
+  }),
+  // ✅ only the findMany (removed the old findFirst)
+  prisma.activity.findMany({
+    where: { type: "VIDEO", isPublished: true },
+    orderBy: { publishedAt: "desc" },
+    take: 6,
+  }),
+  prisma.donation.aggregate({
+    where: { status: "SUCCESSFUL" },
+    _sum: { amount: true },
+  }),
+  prisma.campaign.count({ where: { status: "ACTIVE" } }),
+]);
 
   const featuredCampaigns = campaigns.slice(0, 3);
   const featuredActivities = activities.slice(0, 6);
@@ -249,22 +253,19 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ─── Featured Video — only if a real video Field Note exists ──── */}
-      {featuredVideo && featuredVideo.mediaUrls[0] && (
-        <section className="bg-ink py-20 sm:py-28 px-6 sm:px-12">
-          <div className="max-w-4xl mx-auto text-center mb-10">
-            <p className="font-mono text-sun text-xs tracking-[0.18em] uppercase mb-4">
-              Watch
-            </p>
-            <h2 className="font-display font-extrabold text-3xl sm:text-5xl text-paper tracking-tight">
-              {featuredVideo.title}
-            </h2>
-          </div>
-          <div className="max-w-4xl mx-auto aspect-video rounded-2xl overflow-hidden">
-            <video controls className="w-full h-full" src={featuredVideo.mediaUrls[0]} />
-          </div>
-        </section>
-      )}
+    {featuredVideos.length > 0 && (
+    <FeaturedVideoSection
+      videos={featuredVideos.map((v) => ({
+        title: v.title,
+        slug: v.slug,
+        mediaUrl: v.mediaUrls[0],
+        posterUrl: v.mediaUrls[1] ?? null,
+        excerpt: v.excerpt ?? null,
+        location: v.location ?? null,
+        publishedAt: v.publishedAt,
+      }))}
+    />
+  )}
 
       {/* ─── Partners — only if real partners exist ──────────────── */}
       {partners.length > 0 && (
