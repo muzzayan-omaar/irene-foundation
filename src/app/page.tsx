@@ -125,36 +125,53 @@ export default async function Home() {
       </section>
 
       {/* ─── Trust stats ──────────────────────────────────────── */}
-      <section className="bg-paper border-b border-ink/8 px-6 sm:px-12 py-9">
-        <div className="max-w-5xl mx-auto grid grid-cols-3 gap-4 sm:gap-8 text-center">
-          <div>
-            <p className="font-mono text-2xl sm:text-4xl font-semibold text-clay tracking-tight">
-              USD {raisedTotal.toLocaleString()}
-            </p>
-            <p className="text-[11px] sm:text-sm text-ink/45 mt-1.5">Raised so far</p>
-          </div>
-          <div>
-            <p className="font-mono text-2xl sm:text-4xl font-semibold text-clay tracking-tight">
-              {activeCampaignCount}
-            </p>
-            <p className="text-[11px] sm:text-sm text-ink/45 mt-1.5">Active campaigns</p>
-          </div>
-          <div>
-            <p className="font-mono text-2xl sm:text-4xl font-semibold text-clay tracking-tight">
-              {supporterCount.toLocaleString()}
-            </p>
-            <p className="text-[11px] sm:text-sm text-ink/45 mt-1.5">Supporters</p>
-          </div>
-        </div>
-        <p className="text-center mt-5">
-          <Link
-            href="/transparency"
-            className="text-sm text-ink/45 hover:text-ink underline underline-offset-2 transition"
-          >
-            See the full breakdown →
-          </Link>
+<section className="bg-paper border-b border-ink/8 px-6 sm:px-12 py-12 sm:py-14">
+  <div className="max-w-5xl mx-auto">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-0 text-center sm:divide-x sm:divide-ink/10">
+      
+      {/* Raised */}
+      <div className="sm:px-8">
+        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/40 mb-3">
+          Raised so far
         </p>
-      </section>
+        <p className="font-display font-extrabold text-3xl sm:text-4xl text-clay tracking-tight">
+          USD {raisedTotal.toLocaleString()}
+        </p>
+      </div>
+
+      {/* Active campaigns */}
+      <div className="sm:px-8">
+        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/40 mb-3">
+          Active campaigns
+        </p>
+        <p className="font-display font-extrabold text-3xl sm:text-4xl text-clay tracking-tight">
+          {activeCampaignCount}
+        </p>
+      </div>
+
+      {/* Supporters */}
+      <div className="sm:px-8">
+        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/40 mb-3">
+          Donors & supporters
+        </p>
+        <p className="font-display font-extrabold text-3xl sm:text-4xl text-clay tracking-tight">
+          {supporterCount.toLocaleString()}
+        </p>
+      </div>
+    </div>
+
+    {/* Link */}
+    <div className="mt-10 text-center">
+      <Link
+        href="/transparency"
+        className="inline-flex items-center gap-1.5 text-sm text-ink/50 hover:text-ink transition"
+      >
+        See the full breakdown
+        <span className="transition-transform group-hover:translate-x-0.5">→</span>
+      </Link>
+    </div>
+  </div>
+</section>
 
       {/* ─── Campaign panels ──────────────────────────────────── */}
       {campaigns.length > 0 && (
@@ -198,25 +215,25 @@ export default async function Home() {
           <div key={i} className="flex gap-6 pr-6">
             {[
               {
-                img: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop",
+                img: "https://res.cloudinary.com/diszilwhc/image/upload/v1788477304/Screenshot_2026-09-04_025416_f2biax.png?w=400&h=300&fit=crop",
                 Icon: BookOpen,
                 title: "Education",
                 body: "Helping children and women access the education that opens doors.",
               },
               {
-                img: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=400&h=300&fit=crop",
+                img: "https://res.cloudinary.com/diszilwhc/image/upload/v1788477304/Screenshot_2026-09-04_025516_n4gude.png?w=400&h=300&fit=crop",
                 Icon: Utensils,
                 title: "Food",
                 body: "Meals and food security for families who need it most.",
               },
               {
-                img: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=300&fit=crop",
+                img: "https://res.cloudinary.com/diszilwhc/image/upload/v1788477304/Screenshot_2026-09-04_025449_qcdlwg.png?w=400&h=300&fit=crop",
                 Icon: HeartPulse,
                 title: "Healthcare",
                 body: "Access to healthcare and wellbeing support for vulnerable communities.",
               },
               {
-                img: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=400&h=300&fit=crop",
+                img: "https://res.cloudinary.com/diszilwhc/image/upload/v1788477304/Screenshot_2026-09-04_025347_tbmqtz.png?w=400&h=300&fit=crop",
                 Icon: ShieldCheck,
                 title: "Protection",
                 body: "Standing against violence and exploitation, and protecting the rights of women and children.",
@@ -261,25 +278,25 @@ export default async function Home() {
           <div key={i} className="flex gap-6 pr-6">
             {[
               {
-                img: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=300&fit=crop",
+                img: "https://res.cloudinary.com/diszilwhc/image/upload/v1788477304/Screenshot_2026-09-04_025449_qcdlwg.png?w=400&h=300&fit=crop",
                 Icon: HeartPulse,
                 title: "Healthcare",
                 body: "Access to healthcare and wellbeing support for vulnerable communities.",
               },
               {
-                img: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=400&h=300&fit=crop",
+                img: "https://res.cloudinary.com/diszilwhc/image/upload/v1788477304/Screenshot_2026-09-04_025347_tbmqtz.png?w=400&h=300&fit=crop",
                 Icon: ShieldCheck,
                 title: "Protection",
                 body: "Standing against violence and exploitation, and protecting the rights of women and children.",
               },
               {
-                img: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop",
+                img: "https://res.cloudinary.com/diszilwhc/image/upload/v1788477304/Screenshot_2026-09-04_025416_f2biax.png?w=400&h=300&fit=crop",
                 Icon: BookOpen,
                 title: "Education",
                 body: "Helping children and women access the education that opens doors.",
               },
               {
-                img: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=400&h=300&fit=crop",
+                img: "https://res.cloudinary.com/diszilwhc/image/upload/v1788477304/Screenshot_2026-09-04_025516_n4gude.png?w=400&h=300&fit=crop",
                 Icon: Utensils,
                 title: "Food",
                 body: "Meals and food security for families who need it most.",
@@ -411,124 +428,161 @@ export default async function Home() {
 
 
       {/* ─── Field Notes — staggered blog cards ───────────────── */}
-      {featuredActivities.length > 0 && (
-        <section
-  className="relative py-16 sm:py-24 bg-fixed bg-center bg-cover"
-  style={{
-  backgroundImage:
-    "url('https://res.cloudinary.com/diszilwhc/image/upload/v1788451804/images_3_uklhwb.jpg')",
-}}
->
-  {/* Background overlay */}
-  <div className="absolute inset-0 bg-ink/75" />
+{featuredActivities.length > 0 && (
+  <section
+    className="relative py-16 sm:py-24 bg-fixed bg-center bg-cover"
+    style={{
+      backgroundImage:
+        "url('https://res.cloudinary.com/diszilwhc/image/upload/v1788475606/IJE9b_bd3p2x.jpg')",
+    }}
+  >
+    {/* Background overlay */}
+    <div className="absolute inset-0 bg-ink/75" />
 
-  {/* Content */}
-  <div className="relative">
-          <div className="px-6 sm:px-12 mb-12 sm:mb-16 max-w-5xl mx-auto">
-            <div className="flex items-center gap-3 mb-4">
-              <span className="h-px w-8 bg-sun" />
-              <p className="font-mono text-sun text-xs tracking-[0.2em] uppercase">
-                {SITE_HASHTAG}
-              </p>
-            </div>
-            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-              <div>
-                <p className="font-mono text-paper/50 text-xs tracking-[0.18em] uppercase mb-2">
-                  Proof it&apos;s real
-                </p>
-                <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl text-paper tracking-tight">
-                  Field Notes
-                </h2>
-              </div>
-              <Link
-                href="/field-notes"
-                className="text-sm font-medium text-paper/55 hover:text-paper transition"
-              >
-                See all →
-              </Link>
-            </div>
+    {/* Content */}
+    <div className="relative">
+      <div className="px-6 sm:px-12 mb-12 sm:mb-16 max-w-5xl mx-auto">
+        <div className="flex items-center gap-3 mb-4">
+          <span className="h-px w-8 bg-sun" />
+          <p className="font-mono text-sun text-xs tracking-[0.2em] uppercase">
+            {SITE_HASHTAG}
+          </p>
+        </div>
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+          <div>
+            <p className="font-mono text-paper/50 text-xs tracking-[0.18em] uppercase mb-2">
+              Proof it&apos;s real
+            </p>
+            <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl text-paper tracking-tight">
+              Field Notes
+            </h2>
           </div>
+          <Link
+            href="/field-notes"
+            className="text-sm font-medium text-paper/55 hover:text-paper transition"
+          >
+            See all →
+          </Link>
+        </div>
+      </div>
 
-          <div className="space-y-8 sm:space-y-12">
-            {featuredActivities.map((activity, i) => {
-              const isLeft = i % 2 === 0;
+      <div className="space-y-8 sm:space-y-12">
+        {featuredActivities.map((activity, i) => {
+          const isLeft = i % 2 === 0;
 
-              return (
-                <Link
-                  key={activity.id}
-                  href={`/field-notes/${activity.slug}`}
-                  className={`group flex flex-col sm:flex-row items-stretch overflow-hidden ${
-                    isLeft
-                      ? "sm:mr-[12%] lg:mr-[18%]"
-                      : "sm:ml-[12%] lg:ml-[18%] sm:flex-row-reverse"
-                  }`}
-                >
-                  {/* Image */}
-                  <div className="relative w-full sm:w-[48%] aspect-[16/10] sm:aspect-auto sm:min-h-[280px] overflow-hidden">
-                    {activity.mediaUrls[0] ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={activity.mediaUrls[0]}
-                        alt={activity.title}
-                        className="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-105"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 bg-papyrus" />
-                    )}
-                  </div>
+          // Format date
+          const date = activity.publishedAt
+            ? new Date(activity.publishedAt).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })
+            : null;
 
-                  {/* Content */}
-                  <div
-                    className={`w-full sm:w-[52%] flex flex-col justify-center px-6 sm:px-10 py-8 sm:py-10 ${
-                      isLeft ? "bg-paper text-ink" : "bg-papyrus text-paper"
+          // Truncate description
+          const rawDesc =
+            activity.excerpt || activity.body || activity.content || "";
+          const description =
+            rawDesc.length > 120
+              ? rawDesc.slice(0, 120).trim() + "..."
+              : rawDesc;
+
+          return (
+            <Link
+              key={activity.id}
+              href={`/field-notes/${activity.slug}`}
+              className={`group flex flex-col sm:flex-row items-stretch overflow-hidden ${
+                isLeft
+                  ? "sm:mr-[12%] lg:mr-[18%]"
+                  : "sm:ml-[12%] lg:ml-[18%] sm:flex-row-reverse"
+              }`}
+            >
+              {/* Image */}
+              <div className="relative w-full sm:w-[48%] aspect-[16/10] sm:aspect-auto sm:min-h-[280px] overflow-hidden">
+                {activity.mediaUrls[0] ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={activity.mediaUrls[0]}
+                    alt={activity.title}
+                    className="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="absolute inset-0 bg-papyrus" />
+                )}
+              </div>
+
+              {/* Content */}
+              <div
+                className={`w-full sm:w-[52%] flex flex-col justify-center px-6 sm:px-10 py-8 sm:py-10 ${
+                  isLeft ? "bg-paper text-ink" : "bg-papyrus text-paper"
+                }`}
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <p
+                    className={`font-mono text-[11px] tracking-[0.16em] uppercase ${
+                      isLeft ? "text-clay" : "text-sun"
                     }`}
                   >
-                    <p
-                      className={`font-mono text-[11px] tracking-[0.16em] uppercase mb-3 ${
-                        isLeft ? "text-clay" : "text-sun"
-                      }`}
-                    >
-                      {activity.type.replace("_", " ")}
-                    </p>
-                    <h3 className="font-display font-bold text-xl sm:text-2xl lg:text-3xl leading-snug tracking-tight mb-3">
-                      {activity.title}
-                    </h3>
-                    <p
-                      className={`text-sm leading-relaxed mb-5 line-clamp-2 ${
-                        isLeft ? "text-ink/60" : "text-paper/70"
-                      }`}
-                    >
-                      Real stories from the ground — the kind you can follow,
-                      share, and stand behind.
-                    </p>
-                    <span
-                      className={`inline-flex items-center gap-1.5 text-sm font-semibold ${
-                        isLeft ? "text-ink" : "text-sun"
-                      }`}
-                    >
-                      Read the note
-                      <span className="transition-transform group-hover:translate-x-1">
-                        →
+                    {activity.type.replace("_", " ")}
+                  </p>
+                  {date && (
+                    <>
+                      <span className={isLeft ? "text-ink/30" : "text-paper/30"}>
+                        ·
                       </span>
-                    </span>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
+                      <p
+                        className={`font-mono text-[11px] tracking-[0.08em] ${
+                          isLeft ? "text-ink/50" : "text-paper/50"
+                        }`}
+                      >
+                        {date}
+                      </p>
+                    </>
+                  )}
+                </div>
 
-          <div className="mt-12 sm:mt-16 text-center px-6">
-            <Link
-              href="/field-notes"
-              className="inline-flex items-center gap-2 border border-paper/25 text-paper px-6 py-3 rounded-full text-sm font-semibold hover:bg-paper/10 transition"
-            >
-              View all Field Notes
-              <span>→</span>
+                <h3 className="font-display font-bold text-xl sm:text-2xl lg:text-3xl leading-snug tracking-tight mb-3">
+                  {activity.title}
+                </h3>
+
+                {description && (
+                  <p
+                    className={`text-sm leading-relaxed mb-5 line-clamp-2 ${
+                      isLeft ? "text-ink/60" : "text-paper/70"
+                    }`}
+                  >
+                    {description}
+                  </p>
+                )}
+
+                <span
+                  className={`inline-flex items-center gap-1.5 text-sm font-semibold ${
+                    isLeft ? "text-ink" : "text-sun"
+                  }`}
+                >
+                  Read the note
+                  <span className="transition-transform group-hover:translate-x-1">
+                    →
+                  </span>
+                </span>
+              </div>
             </Link>
-          </div>
-        </div>
-</section>
-      )}
+          );
+        })}
+      </div>
+
+      <div className="mt-12 sm:mt-16 text-center px-6">
+        <Link
+          href="/field-notes"
+          className="inline-flex items-center gap-2 border border-paper/25 text-paper px-6 py-3 rounded-full text-sm font-semibold hover:bg-paper/10 transition"
+        >
+          View all Field Notes
+          <span>→</span>
+        </Link>
+      </div>
+    </div>
+  </section>
+)}
 
       {/* ─── Wall of Support ──────────────────────────────────── */}
       {supportPosts.length > 0 && (
@@ -600,11 +654,10 @@ export default async function Home() {
       {/* ─── Newsletter ───────────────────────────────────────── */}
       <section className="bg-papyrus text-paper py-16 sm:py-20 px-6 sm:px-12 text-center">
         <h2 className="font-display font-extrabold text-2xl sm:text-4xl tracking-tight mb-3">
-          Don&apos;t miss what happens next.
+          Don&apos;t miss what happens next with your supported campaigns.
         </h2>
         <p className="text-paper/70 text-sm sm:text-base max-w-md mx-auto mb-7 leading-relaxed">
-          One email whenever there&apos;s real news — a campaign hits its
-          goal, a new story goes up. No noise.
+          One email whenever there&apos;s a new update, story, or campaign to support. No spam, ever.
         </p>
         <div className="flex justify-center">
           <NewsletterForm />
@@ -616,15 +669,15 @@ export default async function Home() {
         <div className="relative min-h-[40vh] sm:min-h-full">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=1200"
+            src="https://res.cloudinary.com/diszilwhc/image/upload/v1788475327/BNBjZ_rwjtet.jpg"
             alt=""
             className="absolute inset-0 w-full h-full object-cover"
           />
         </div>
         <div className="bg-ink text-paper flex flex-col justify-center px-8 sm:px-14 lg:px-16 py-14 sm:py-16">
-          <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl leading-[1.1] tracking-tight mb-7">
-            Join us in rebuilding this beautiful work.
-          </h2>
+         <h2 className="font-display font-extrabold text-2xl sm:text-3xl lg:text-4xl leading-[1.15] tracking-tight mb-7">
+  Join <span className="text-sun">{SITE_HASHTAG}</span> today and help us support women, children, and communities.
+</h2>
           <div className="flex flex-wrap gap-3">
             <Link
               href="/campaigns"

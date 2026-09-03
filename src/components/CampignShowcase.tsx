@@ -78,7 +78,7 @@ export default function CampaignShowcase({
   className="relative py-16 sm:py-24 bg-fixed bg-center bg-cover"
   style={{
     backgroundImage:
-      "url('https://res.cloudinary.com/diszilwhc/image/upload/v1788451804/images_3_uklhwb.jpg')",
+      "url('https://res.cloudinary.com/diszilwhc/image/upload/v1788475606/IJE9b_bd3p2x.jpg')",
   }}
 >
   {/* Fixed background overlay */}
