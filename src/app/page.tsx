@@ -8,6 +8,7 @@ import NewsletterForm from "@/components/NewsletterForm";
 import prisma from "@/lib/prisma";
 
 import FeaturedVideoSection from "@/components/FeaturedVideoSection";
+import CampaignShowcase from "@/components/CampignShowcase";
 
 const HERO_IMAGE_URL =
   "https://images.unsplash.com/photo-1509099836639-18ba1795216d?q=80&w=1600";
@@ -58,7 +59,7 @@ export default async function Home() {
   prisma.campaign.count({ where: { status: "ACTIVE" } }),
 ]);
 
-  const featuredCampaigns = campaigns.slice(0, 3);
+
   const featuredActivities = activities.slice(0, 6);
   const raisedTotal = totalRaised._sum.amount?.toNumber() ?? 0;
 
@@ -155,64 +156,22 @@ export default async function Home() {
       </section>
 
       {/* ─── Campaign panels ──────────────────────────────────── */}
-      {featuredCampaigns.map((campaign, i) => {
-        const theme = PANEL_THEMES[i % PANEL_THEMES.length];
-        const imageFirst = i % 2 === 0;
-
-        return (
-          <section key={campaign.id} className="grid grid-cols-1 md:grid-cols-2">
-            <div
-              className={`relative min-h-[55vh] md:min-h-[65vh] ${
-                imageFirst ? "md:order-1" : "md:order-2"
-              }`}
-            >
-              {campaign.coverImage ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={campaign.coverImage}
-                  alt={campaign.title}
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-              ) : (
-                <div className={`absolute inset-0 ${theme.bg} opacity-50`} />
-              )}
-            </div>
-
-            <div
-              className={`${theme.bg} ${theme.text} flex flex-col justify-center px-8 sm:px-14 lg:px-16 py-14 sm:py-20 ${
-                imageFirst ? "md:order-2" : "md:order-1"
-              }`}
-            >
-              <p className={`font-mono text-xs tracking-[0.18em] uppercase mb-4 ${theme.accent}`}>
-                Active Campaign
-              </p>
-              <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl leading-[1.1] tracking-tight mb-5">
-                {campaign.title}
-              </h2>
-              <p className="text-base sm:text-lg opacity-80 mb-7 max-w-md leading-relaxed">
-                {campaign.story.slice(0, 160)}
-                {campaign.story.length > 160 ? "…" : ""}
-              </p>
-
-              <div className="max-w-sm mb-2">
-                <WaveformProgress percent={campaign.progressPercent} />
-              </div>
-              <p className={`font-mono text-sm mb-8 ${theme.accent}`}>
-                {campaign.currency} {campaign.raisedAmount.toLocaleString()} of{" "}
-                {campaign.currency} {campaign.goalAmount.toString()}
-                <span className="opacity-70"> · {campaign.donorCount} donors</span>
-              </p>
-
-              <Link
-                href={`/campaigns/${campaign.slug}`}
-                className="inline-block bg-sun text-ink px-6 py-3 rounded-full font-semibold text-sm w-fit hover:brightness-105 transition"
-              >
-                Give to This Campaign
-              </Link>
-            </div>
-          </section>
-        );
-      })}
+      {campaigns.length > 0 && (
+        <CampaignShowcase
+          campaigns={campaigns.map((campaign) => ({
+            id: campaign.id,
+            title: campaign.title,
+            slug: campaign.slug,
+            story: campaign.story,
+            coverImage: campaign.coverImage,
+            currency: campaign.currency,
+            goalAmount: campaign.goalAmount.toString(),
+            raisedAmount: Number(campaign.raisedAmount),
+            progressPercent: Number(campaign.progressPercent),
+            donorCount: Number(campaign.donorCount),
+          }))}
+        />
+      )}
 
       {/* ─── How It Works ─────────────────────────────────────── */}
       <section className="bg-paper px-6 sm:px-12 py-20 sm:py-28">
