@@ -74,8 +74,18 @@ export default function CampaignShowcase({
   const theme = themes[activeIndex % themes.length];
 
   return (
-    <section className="bg-paper py-16 sm:py-24">
-      <div className="max-w-6xl mx-auto px-6 sm:px-12">
+    <section
+  className="relative py-16 sm:py-24 bg-fixed bg-center bg-cover"
+  style={{
+    backgroundImage:
+      "url('https://res.cloudinary.com/diszilwhc/image/upload/v1788451804/images_3_uklhwb.jpg')",
+  }}
+>
+  {/* Fixed background overlay */}
+  <div className="absolute inset-0 bg-paper/80" />
+
+  {/* Content */}
+  <div className="relative max-w-6xl mx-auto px-6 sm:px-12">
         {/* Section heading */}
         <div className="mb-10 sm:mb-14">
           <div className="flex items-center gap-3 mb-4">

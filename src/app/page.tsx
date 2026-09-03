@@ -280,7 +280,18 @@ export default async function Home() {
 
       {/* ─── Field Notes — staggered blog cards ───────────────── */}
       {featuredActivities.length > 0 && (
-        <section className="bg-ink py-16 sm:py-24">
+        <section
+  className="relative py-16 sm:py-24 bg-fixed bg-center bg-cover"
+  style={{
+  backgroundImage:
+    "url('https://res.cloudinary.com/diszilwhc/image/upload/v1788451804/images_3_uklhwb.jpg')",
+}}
+>
+  {/* Background overlay */}
+  <div className="absolute inset-0 bg-ink/75" />
+
+  {/* Content */}
+  <div className="relative">
           <div className="px-6 sm:px-12 mb-12 sm:mb-16 max-w-5xl mx-auto">
             <div className="flex items-center gap-3 mb-4">
               <span className="h-px w-8 bg-sun" />
@@ -383,7 +394,8 @@ export default async function Home() {
               <span>→</span>
             </Link>
           </div>
-        </section>
+        </div>
+</section>
       )}
 
       {/* ─── Wall of Support ──────────────────────────────────── */}
