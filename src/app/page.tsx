@@ -9,7 +9,7 @@ import prisma from "@/lib/prisma";
 import { BookOpen, Utensils, HeartPulse, ShieldCheck, Heart } from "lucide-react";
 
 import FeaturedVideoSection from "@/components/FeaturedVideoSection";
-import CampaignShowcase from "@/components/CampignShowcase";
+import CampaignShowcase from "@/components/CampaignShowcase";
 import JoinMovementCTA from "@/components/JoinMovementCTA";
 
 const HERO_IMAGE_URL =

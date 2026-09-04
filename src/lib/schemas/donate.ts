@@ -12,6 +12,9 @@ export const donateSchema = z.object({
   message: z.string().optional(),
   isAnonymous: z.boolean().default(false),
   isSubscribed: z.boolean().default(false), // explicit opt-in, never silent
+  agreedToTerms: z.boolean().refine((val) => val === true, {
+    message: "You must agree to the Terms of Service and Privacy Policy to continue",
+  }),
 });
 
 export type DonateFormInput = z.input<typeof donateSchema>;

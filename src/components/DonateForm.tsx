@@ -1,12 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { donateSchema, type DonateFormInput, type DonateInput } from "@/lib/schemas/donate";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 
-const PRESET_AMOUNTS = [10, 25, 50, 100];
+const PRESET_AMOUNTS: Record<"USD" | "UGX", number[]> = {
+  USD: [10, 25, 50, 100],
+  UGX: [5000, 10000, 20000, 50000],
+};
 
 export default function DonateForm({ campaignId }: { campaignId?: string }) {
   const [submitting, setSubmitting] = useState(false);
@@ -31,6 +35,7 @@ export default function DonateForm({ campaignId }: { campaignId?: string }) {
 
   const selectedAmount = watch("amount");
   const frequency = watch("frequency");
+  const currency = watch("currency") as "USD" | "UGX";
 
   async function onSubmit(data: DonateInput) {
     setSubmitting(true);
@@ -87,13 +92,55 @@ export default function DonateForm({ campaignId }: { campaignId?: string }) {
         </button>
       </div>
 
+      {/* Currency toggle */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          {t("donate_currencyLabel")}
+        </label>
+        <div className="flex rounded-lg overflow-hidden border border-gray-200 mb-1">
+          <button
+            type="button"
+            onClick={() => {
+              setValue("currency", "USD");
+              setValue("amount", undefined as unknown as number);
+            }}
+            className={`flex-1 py-2 text-sm font-medium ${
+              currency === "USD"
+                ? "bg-gray-900 text-white"
+                : "bg-white text-gray-600"
+            }`}
+          >
+            USD ($)
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setValue("currency", "UGX");
+              setValue("amount", undefined as unknown as number);
+            }}
+            className={`flex-1 py-2 text-sm font-medium ${
+              currency === "UGX"
+                ? "bg-gray-900 text-white"
+                : "bg-white text-gray-600"
+            }`}
+          >
+            UGX (Shillings)
+          </button>
+        </div>
+        <p className="text-xs text-gray-400">
+          {currency === "UGX"
+            ? t("donate_currencyHint_ugx")
+            : t("donate_currencyHint_usd")}
+        </p>
+      </div>
+
       {/* Amount presets */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           {t("donate_amountLabel")}
         </label>
         <div className="grid grid-cols-4 gap-2 mb-2">
-          {PRESET_AMOUNTS.map((amt) => (
+          {PRESET_AMOUNTS[currency || "USD"].map((amt) => (
             <button
               key={amt}
               type="button"
@@ -104,7 +151,7 @@ export default function DonateForm({ campaignId }: { campaignId?: string }) {
                   : "border-gray-200 text-gray-700"
               }`}
             >
-              ${amt}
+              {currency === "UGX" ? amt.toLocaleString() : `$${amt}`}
             </button>
           ))}
         </div>
@@ -200,6 +247,27 @@ export default function DonateForm({ campaignId }: { campaignId?: string }) {
           <input type="checkbox" {...register("isSubscribed")} />
           {t("donate_subscribe")}
         </label>
+
+        <label className="flex items-start gap-2 text-sm text-gray-600">
+          <input
+            type="checkbox"
+            {...register("agreedToTerms")}
+            className="mt-0.5"
+          />
+          <span>
+            {t("donate_agreeText")}{" "}
+            <Link href="/terms" target="_blank" className="underline hover:text-gray-900">
+              {t("donate_termsLink")}
+            </Link>{" "}
+            {t("donate_and")}{" "}
+            <Link href="/privacy" target="_blank" className="underline hover:text-gray-900">
+              {t("donate_privacyLink")}
+            </Link>
+          </span>
+        </label>
+        {errors.agreedToTerms && (
+          <p className="text-red-500 text-xs">{errors.agreedToTerms.message}</p>
+        )}
       </div>
 
       {serverError && (
