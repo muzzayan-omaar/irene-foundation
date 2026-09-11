@@ -3,15 +3,25 @@ import { z } from "zod";
 import prisma from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
 
+const emptyToUndefined = z
+  .string()
+  .optional()
+  .transform((v) => (v === "" ? undefined : v));
+
 const campaignSchema = z.object({
   title: z.string().min(2),
   slug: z.string().min(2),
   story: z.string().min(10),
-  coverImage: z.string().url().optional(),
+  coverImage: emptyToUndefined.pipe(z.string().url().optional()),
   galleryImages: z.array(z.string().url()).default([]),
-  videoUrl: z.string().url().optional(),
+  videoUrl: emptyToUndefined.pipe(z.string().url().optional()),
   budgetBreakdown: z
-    .array(z.object({ label: z.string().min(1), amount: z.coerce.number() }))
+    .array(
+      z.object({
+        label: z.string().min(1),
+        amount: z.coerce.number(),
+      })
+    )
     .optional(),
   outcomes: z.string().optional(),
   goalAmount: z.coerce.number().positive(),
