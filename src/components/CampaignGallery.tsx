@@ -59,15 +59,12 @@ export default function CampaignGallery({
 
   return (
     <>
-      {/* Temporary visible marker so you know this file is live */}
-      <p className="text-xs text-red-500 mb-2 font-mono">NEW GALLERY LOADED</p>
-
       <div className="grid grid-cols-2 sm:grid-cols-4 auto-rows-[140px] sm:auto-rows-[160px] gap-2 sm:gap-3">
         {images.map((url, i) => (
           <button
             key={i}
             onClick={() => setOpenIndex(i)}
-            className={`relative overflow-hidden rounded-2xl group ${spans[i % spans.length]}`}
+            className={`relative overflow-hidden group ${spans[i % spans.length]}`}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -105,7 +102,7 @@ export default function CampaignGallery({
           <img
             src={images[openIndex]}
             alt=""
-            className="max-w-full max-h-[82vh] object-contain rounded-lg"
+            className="max-w-full max-h-[82vh] object-contain"
             onClick={(e) => e.stopPropagation()}
           />
           <button
@@ -126,7 +123,7 @@ export default function CampaignGallery({
                 e.stopPropagation();
                 share();
               }}
-              className="flex items-center gap-2 text-white text-sm bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full"
+              className="flex items-center gap-2 text-white text-sm bg-white/10 hover:bg-white/20 px-4 py-2"
             >
               <Share2 size={15} />
               Share
