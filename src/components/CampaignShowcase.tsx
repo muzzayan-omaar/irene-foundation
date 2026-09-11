@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { WaveformProgress } from "@/components/Waveform";
 
 type Campaign = {
   id: string;
@@ -36,11 +35,6 @@ export default function CampaignShowcase({
     setActiveIndex(index);
   };
 
-  /*
-   * Campaign themes.
-   * The active campaign controls the visual treatment
-   * of the entire showcase.
-   */
   const themes = [
     {
       panel: "bg-ink",
@@ -75,22 +69,18 @@ export default function CampaignShowcase({
 
   return (
     <section
-  className="relative py-16 sm:py-24 bg-fixed bg-center bg-cover"
-  style={{
-    backgroundImage:
-      "url('https://res.cloudinary.com/diszilwhc/image/upload/v1788475606/IJE9b_bd3p2x.jpg')",
-  }}
->
-  {/* Fixed background overlay */}
-  <div className="absolute inset-0 bg-paper/80" />
+      className="relative py-16 sm:py-24 bg-fixed bg-center bg-cover"
+      style={{
+        backgroundImage:
+          "url('https://res.cloudinary.com/diszilwhc/image/upload/v1788475606/IJE9b_bd3p2x.jpg')",
+      }}
+    >
+      <div className="absolute inset-0 bg-paper/80" />
 
-  {/* Content */}
-  <div className="relative max-w-6xl mx-auto px-6 sm:px-12">
-        {/* Section heading */}
+      <div className="relative max-w-6xl mx-auto px-6 sm:px-12">
         <div className="mb-10 sm:mb-14">
           <div className="flex items-center gap-3 mb-4">
             <span className="h-px w-8 bg-clay" />
-
             <p className="font-mono text-clay text-xs tracking-[0.2em] uppercase">
               Make an impact
             </p>
@@ -98,8 +88,6 @@ export default function CampaignShowcase({
 
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
             <div>
-
-
               <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl tracking-tight text-ink">
                 Active Campaigns
               </h2>
@@ -114,19 +102,11 @@ export default function CampaignShowcase({
           </div>
         </div>
 
-        {/* =========================================================
-            CAMPAIGN SHOWCASE
-        ========================================================= */}
-
         <div
           className={`grid grid-cols-1 lg:grid-cols-[1.45fr_0.75fr] gap-0 rounded-2xl overflow-hidden transition-colors duration-500 ${theme.panel}`}
         >
-          {/* =======================================================
-              PRIMARY IMAGE
-          ======================================================= */}
-
+          {/* PRIMARY IMAGE */}
           <div className="relative aspect-[16/11] sm:aspect-[16/10] lg:aspect-auto lg:min-h-[620px] overflow-hidden bg-ink">
-            {/* Image */}
             {active.coverImage ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -139,94 +119,48 @@ export default function CampaignShowcase({
               <div className="absolute inset-0 bg-ink" />
             )}
 
-            {/* Original campaign color grading */}
             <div className="absolute inset-0 bg-gradient-to-br from-ink/55 via-transparent to-clay/25 mix-blend-multiply" />
-
-            {/* Warm cinematic wash */}
             <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/20 to-transparent" />
-
-            {/* Bottom readability gradient */}
             <div className="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-ink via-ink/60 to-transparent" />
-
-            {/* Subtle image color veil */}
             <div className="absolute inset-0 bg-sun/5 mix-blend-screen" />
 
-            {/* ===================================================
-                COMPACT GLASS CAMPAIGN INFO
-            =================================================== */}
-
-            <div className="absolute inset-x-0 bottom-0 p-3 sm:p-4 lg:p-5 text-paper">
-              <div className="rounded-xl bg-ink/40 backdrop-blur-md border border-paper/10 px-4 py-4 sm:px-5 sm:py-4">
-                <div className="max-w-xl">
-                  <div className="flex items-center justify-between gap-4 mb-2">
-                    <p className="font-mono text-sun text-[9px] sm:text-[10px] tracking-[0.18em] uppercase">
-                      Active Campaign
-                    </p>
-
-                    <p className="font-mono text-[10px] text-paper/60">
-                      {active.progressPercent}% funded
-                    </p>
-                  </div>
-
-                  <h3 className="font-display font-extrabold text-xl sm:text-2xl lg:text-3xl leading-tight tracking-tight mb-2">
-                    {active.title}
-                  </h3>
-
-                  <p className="text-paper/70 text-xs sm:text-sm leading-relaxed max-w-lg mb-3 line-clamp-1 sm:line-clamp-2">
-                    {active.story}
+            {/* MINIMAL OVERLAY — just title + CTA, no glass card.
+                Story, progress, and full stats already live in the side
+                panel's campaign list, so repeating them here just ate
+                into the photo. */}
+            <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 lg:p-10 text-paper">
+              <div className="max-w-xl">
+                <div className="flex items-center gap-3 mb-3">
+                  <p className="font-mono text-sun text-[10px] tracking-[0.18em] uppercase">
+                    Active Campaign
                   </p>
-
-                  <div className="max-w-sm mb-3">
-                    <WaveformProgress percent={active.progressPercent} />
-                  </div>
-
-                  <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-                    <p className="font-mono text-[10px] sm:text-xs text-sun">
-                      {active.currency}{" "}
-                      {active.raisedAmount.toLocaleString()} raised
-                    </p>
-
-                    <span className="text-paper/30">·</span>
-
-                    <p className="font-mono text-[10px] sm:text-xs text-paper/55">
-                      of {active.currency}{" "}
-                      {Number(active.goalAmount).toLocaleString()}
-                    </p>
-
-                    <span className="text-paper/30">·</span>
-
-                    <p className="font-mono text-[10px] sm:text-xs text-paper/55">
-                      {active.donorCount} donors
-                    </p>
-
-                    <Link
-                      href={`/campaigns/${active.slug}`}
-                      className="ml-auto inline-flex items-center gap-1.5 bg-sun text-ink px-4 py-2 rounded-full font-semibold text-xs hover:brightness-105 transition"
-                    >
-                      Give
-                      <ArrowRight size={13} />
-                    </Link>
-                  </div>
+                  <span className="text-paper/30">·</span>
+                  <p className="font-mono text-[10px] text-paper/60">
+                    {active.progressPercent}% funded
+                  </p>
                 </div>
+
+                <h3 className="font-display font-extrabold text-2xl sm:text-3xl lg:text-4xl leading-tight tracking-tight mb-5">
+                  {active.title}
+                </h3>
+
+                <Link
+                  href={`/campaigns/${active.slug}`}
+                  className="inline-flex items-center gap-1.5 bg-sun text-ink px-5 py-2.5 rounded-full font-semibold text-sm hover:brightness-105 transition"
+                >
+                  Give Now
+                  <ArrowRight size={14} />
+                </Link>
               </div>
             </div>
           </div>
 
-          {/* =======================================================
-              CAMPAIGN SELECTOR / THEMED PANEL
-          ======================================================= */}
-
-          <div
-            className={`flex flex-col min-h-[620px] ${theme.text} ${theme.panel}`}
-          >
-            {/* Header */}
+          {/* CAMPAIGN SELECTOR / THEMED PANEL */}
+          <div className={`flex flex-col min-h-[620px] ${theme.text} ${theme.panel}`}>
             <div className="px-5 pt-6 sm:px-6 sm:pt-7 pb-5">
-              <p
-                className={`font-mono ${theme.muted} text-[10px] tracking-[0.18em] uppercase`}
-              >
+              <p className={`font-mono ${theme.muted} text-[10px] tracking-[0.18em] uppercase`}>
                 Explore active campaigns
               </p>
-
               <div className="mt-3">
                 <p className="font-display font-bold text-xl leading-tight">
                   Choose where
@@ -236,7 +170,6 @@ export default function CampaignShowcase({
               </div>
             </div>
 
-            {/* Campaign list */}
             <div className={`border-t ${theme.border}`}>
               {campaigns.map((campaign, index) => {
                 const isActive = index === activeIndex;
@@ -247,13 +180,10 @@ export default function CampaignShowcase({
                     type="button"
                     onClick={() => selectCampaign(index)}
                     className={`w-full text-left border-b ${theme.border} px-5 sm:px-6 py-5 transition-all group ${
-                      isActive
-                        ? `${theme.active} opacity-100`
-                        : "opacity-50 hover:opacity-90"
+                      isActive ? `${theme.active} opacity-100` : "opacity-50 hover:opacity-90"
                     }`}
                   >
                     <div className="flex items-start gap-4">
-                      {/* Number */}
                       <span
                         className={`font-mono text-xs pt-1 transition-colors ${
                           isActive ? theme.accent : theme.muted
@@ -282,17 +212,11 @@ export default function CampaignShowcase({
                           />
                         </div>
 
-                        <p
-                          className={`${
-                            theme.muted
-                          } text-xs sm:text-sm leading-relaxed mt-2 line-clamp-2`}
-                        >
+                        <p className={`${theme.muted} text-xs sm:text-sm leading-relaxed mt-2 line-clamp-2`}>
                           {campaign.story}
                         </p>
 
-                        <p
-                          className={`font-mono text-[10px] sm:text-xs ${theme.accent} mt-3`}
-                        >
+                        <p className={`font-mono text-[10px] sm:text-xs ${theme.accent} mt-3`}>
                           {campaign.progressPercent}% funded
                         </p>
                       </div>
@@ -302,18 +226,13 @@ export default function CampaignShowcase({
               })}
             </div>
 
-            {/* Bottom CTA */}
             <div className="mt-auto px-5 sm:px-6 py-6">
               <Link
                 href="/campaigns"
                 className={`group inline-flex items-center gap-2 text-sm font-semibold ${theme.muted} hover:opacity-100 transition`}
               >
                 Explore every campaign
-
-                <ArrowRight
-                  size={15}
-                  className="transition-transform group-hover:translate-x-1"
-                />
+                <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
           </div>
@@ -326,7 +245,6 @@ export default function CampaignShowcase({
             opacity: 0;
             transform: scale(1.025);
           }
-
           to {
             opacity: 1;
             transform: scale(1);
