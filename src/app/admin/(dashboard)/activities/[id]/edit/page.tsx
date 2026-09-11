@@ -30,7 +30,7 @@ export default async function EditActivityPage({
           slug: activity.slug,
           type: activity.type,
           body: activity.body,
-          mediaUrls: activity.mediaUrls.join(", "),
+          mediaUrls: activity.mediaUrls,
           campaignId: activity.campaignId ?? "",
           isPublished: activity.isPublished,
         }}

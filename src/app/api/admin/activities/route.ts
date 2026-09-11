@@ -71,3 +71,18 @@ export async function PATCH(req: NextRequest) {
 
   return NextResponse.json(activity);
 }
+
+export async function DELETE(req: NextRequest) {
+  const { authorized } = await requireAdmin();
+  if (!authorized) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const id = req.nextUrl.searchParams.get("id");
+  if (!id) {
+    return NextResponse.json({ error: "Missing activity id" }, { status: 400 });
+  }
+
+  await prisma.activity.delete({ where: { id } });
+  return NextResponse.json({ success: true });
+}

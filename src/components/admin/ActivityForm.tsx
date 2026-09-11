@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import CloudinaryUploadButton from "./CloudinaryUploadButton";
 import { useToast } from "@/components/ui/ToastProvider";
+import CloudinaryUploadButton from "./CloudinaryUploadButton";
 
 type ActivityFormValues = {
   id?: string;
@@ -11,10 +11,19 @@ type ActivityFormValues = {
   slug: string;
   type: "UPDATE" | "PHOTO_STORY" | "VIDEO" | "POD";
   body: string;
-  mediaUrls: string; // comma-separated in the form, split into an array on submit
+  mediaUrls: string[];
   campaignId?: string;
   isPublished: boolean;
 };
+
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
 
 export default function ActivityForm({
   initialValues,
@@ -30,11 +39,14 @@ export default function ActivityForm({
       slug: "",
       type: "UPDATE",
       body: "",
-      mediaUrls: "",
+      mediaUrls: [],
       campaignId: "",
       isPublished: false,
     }
   );
+  // Once editing an existing activity, or once the person has typed directly
+  // into the slug field, stop auto-generating it from the title.
+  const [slugTouched, setSlugTouched] = useState(isEditing);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -47,6 +59,25 @@ export default function ActivityForm({
     setValues((prev) => ({ ...prev, [key]: value }));
   }
 
+  function handleTitleChange(title: string) {
+    setValues((prev) => ({
+      ...prev,
+      title,
+      slug: slugTouched ? prev.slug : slugify(title),
+    }));
+  }
+
+  function addMediaUrl(url: string) {
+    setValues((prev) => ({ ...prev, mediaUrls: [...prev.mediaUrls, url] }));
+  }
+
+  function removeMediaUrl(index: number) {
+    setValues((prev) => ({
+      ...prev,
+      mediaUrls: prev.mediaUrls.filter((_, i) => i !== index),
+    }));
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSubmitting(true);
@@ -54,10 +85,6 @@ export default function ActivityForm({
 
     const payload = {
       ...values,
-      mediaUrls: values.mediaUrls
-        .split(",")
-        .map((url) => url.trim())
-        .filter(Boolean),
       campaignId: values.campaignId || undefined,
     };
 
@@ -70,12 +97,13 @@ export default function ActivityForm({
     const result = await res.json();
 
     if (!res.ok) {
+      setError(result.error || "Something went wrong");
       showToast(result.error || "Something went wrong", "error");
       setSubmitting(false);
       return;
     }
 
-    showToast("Saved successfully");
+    showToast(isEditing ? "Activity updated" : "Activity created");
     router.push("/admin/activities");
     router.refresh();
   }
@@ -86,7 +114,7 @@ export default function ActivityForm({
         <label className="block text-sm font-medium mb-1">Title</label>
         <input
           value={values.title}
-          onChange={(e) => update("title", e.target.value)}
+          onChange={(e) => handleTitleChange(e.target.value)}
           required
           className="w-full rounded-md border border-gray-200 px-3 py-2 text-sm"
         />
@@ -96,13 +124,15 @@ export default function ActivityForm({
         <label className="block text-sm font-medium mb-1">Slug</label>
         <input
           value={values.slug}
-          onChange={(e) => update("slug", e.target.value)}
+          onChange={(e) => {
+            setSlugTouched(true);
+            update("slug", e.target.value);
+          }}
           required
-          placeholder="new-water-point"
           className="w-full rounded-md border border-gray-200 px-3 py-2 text-sm"
         />
         <p className="text-xs text-gray-400 mt-1">
-          Used in the URL: /field-notes/{values.slug || "..."}
+          Auto-generated from the title — edit directly if you want something different. URL: /field-notes/{values.slug || "..."}
         </p>
       </div>
 
@@ -131,22 +161,38 @@ export default function ActivityForm({
         />
       </div>
 
+      {/* Real upload UI instead of a comma-separated URL field */}
       <div>
         <label className="block text-sm font-medium mb-1">Media</label>
-        <div className="flex items-center gap-3 mb-2">
-          <CloudinaryUploadButton
-            label="Upload Media"
-            onUpload={(url) =>
-              update(
-                "mediaUrls",
-                values.mediaUrls ? `${values.mediaUrls}, ${url}` : url
-              )
-            }
-          />
-        </div>
-        {values.mediaUrls && (
-          <p className="text-xs text-gray-400 break-all">{values.mediaUrls}</p>
+        <CloudinaryUploadButton
+          label={values.type === "PHOTO_STORY" ? "Add Photo" : "Upload Media"}
+          multiple={values.type === "PHOTO_STORY"}
+          onUpload={addMediaUrl}
+        />
+        {values.mediaUrls.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-3">
+            {values.mediaUrls.map((url, i) => (
+              <div key={i} className="relative">
+                {values.type === "VIDEO" ? (
+                  <video src={url} className="h-16 w-16 object-cover rounded-md" />
+                ) : (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={url} alt="" className="h-16 w-16 object-cover rounded-md" />
+                )}
+                <button
+                  type="button"
+                  onClick={() => removeMediaUrl(i)}
+                  className="absolute -top-1.5 -right-1.5 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
         )}
+        <p className="text-xs text-gray-400 mt-2">
+          For Photo Story, add as many as you like. For Video/Pod, just the one file.
+        </p>
       </div>
 
       <div>
@@ -181,7 +227,7 @@ export default function ActivityForm({
       <button
         type="submit"
         disabled={submitting}
-        className="bg-gray-900 text-white px-5 py-2.5 rounded-md text-sm font-medium active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="bg-gray-900 text-white px-5 py-2.5 rounded-md text-sm font-medium hover:bg-gray-800 active:scale-95 transition disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {submitting ? "Saving..." : isEditing ? "Save Changes" : "Create Activity"}
       </button>
