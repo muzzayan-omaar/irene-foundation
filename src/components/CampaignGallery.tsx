@@ -22,16 +22,13 @@ export default function CampaignGallery({
     );
   }, [images.length]);
 
-  // Keyboard navigation in lightbox
   useEffect(() => {
     if (openIndex === null) return;
-
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") setOpenIndex(null);
       if (e.key === "ArrowRight") next();
       if (e.key === "ArrowLeft") prev();
     }
-
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [openIndex, next, prev]);
@@ -39,13 +36,10 @@ export default function CampaignGallery({
   async function share() {
     if (navigator.share) {
       try {
-        await navigator.share({
-          title: "Campaign",
-          url: campaignUrl,
-        });
+        await navigator.share({ title: "Campaign", url: campaignUrl });
         return;
       } catch {
-        // user cancelled
+        /* cancelled */
       }
     }
     await navigator.clipboard.writeText(campaignUrl);
@@ -54,52 +48,49 @@ export default function CampaignGallery({
 
   if (!images?.length) return null;
 
+  // Pattern that creates visual variety (large / tall / wide)
+  const spans = [
+    "sm:col-span-2 sm:row-span-2", // big
+    "",                            // normal
+    "sm:row-span-2",               // tall
+    "",                            // normal
+    "sm:col-span-2",               // wide
+    "",                            // normal
+  ];
+
   return (
     <>
-      {/* Modern masonry — natural heights, no uniform cards */}
-<div
-  className="w-full"
-  style={{
-    columnCount: 3,
-    columnGap: "12px",
-  }}
->
-  <style jsx>{`
-    @media (max-width: 640px) {
-      div {
-        column-count: 2 !important;
-      }
-    }
-  `}</style>
-
-  {images.map((url, i) => (
-    <button
-      key={i}
-      onClick={() => setOpenIndex(i)}
-      className="mb-3 w-full break-inside-avoid overflow-hidden rounded-xl focus:outline-none"
-      style={{ display: "inline-block" }}
-    >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={url}
-        alt={`Gallery photo ${i + 1}`}
-        className="w-full h-auto block transition duration-300 hover:brightness-95 hover:scale-[1.02]"
-        style={{ display: "block" }}
-        loading="lazy"
-      />
-    </button>
-  ))}
-</div>
+      <div className="grid grid-cols-2 sm:grid-cols-4 auto-rows-[140px] sm:auto-rows-[160px] gap-2 sm:gap-3">
+        {images.map((url, i) => {
+          const span = spans[i % spans.length];
+          return (
+            <button
+              key={i}
+              onClick={() => setOpenIndex(i)}
+              className={`relative overflow-hidden rounded-2xl group focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-black/30 ${span}`}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={url}
+                alt={`Gallery photo ${i + 1}`}
+                className="absolute inset-0 w-full h-full object-cover transition duration-500 group-hover:scale-105"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition duration-300" />
+            </button>
+          );
+        })}
+      </div>
 
       {/* Lightbox */}
       {openIndex !== null && (
         <div
-          className="fixed inset-0 z-[200] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4"
+          className="fixed inset-0 z-[200] bg-black/92 backdrop-blur-sm flex items-center justify-center p-4"
           onClick={() => setOpenIndex(null)}
         >
           <button
             onClick={() => setOpenIndex(null)}
-            className="absolute top-5 right-5 text-white/80 hover:text-white transition"
+            className="absolute top-5 right-5 text-white/80 hover:text-white"
             aria-label="Close"
           >
             <X size={28} />
@@ -110,8 +101,8 @@ export default function CampaignGallery({
               e.stopPropagation();
               prev();
             }}
-            className="absolute left-3 sm:left-6 text-white/80 hover:text-white transition"
-            aria-label="Previous photo"
+            className="absolute left-3 sm:left-6 text-white/80 hover:text-white"
+            aria-label="Previous"
           >
             <ChevronLeft size={36} />
           </button>
@@ -129,8 +120,8 @@ export default function CampaignGallery({
               e.stopPropagation();
               next();
             }}
-            className="absolute right-3 sm:right-6 text-white/80 hover:text-white transition"
-            aria-label="Next photo"
+            className="absolute right-3 sm:right-6 text-white/80 hover:text-white"
+            aria-label="Next"
           >
             <ChevronRight size={36} />
           </button>
@@ -144,7 +135,7 @@ export default function CampaignGallery({
                 e.stopPropagation();
                 share();
               }}
-              className="flex items-center gap-2 text-white text-sm bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full transition backdrop-blur-sm"
+              className="flex items-center gap-2 text-white text-sm bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full transition"
             >
               <Share2 size={15} />
               Share
