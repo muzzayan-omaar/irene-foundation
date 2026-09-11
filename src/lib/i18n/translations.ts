@@ -35,6 +35,10 @@ export const translations: Record<Locale, Record<string, string>> = {
     campaignDetail_giveButton: "Give to This Campaign",
     campaignDetail_completedNote:
       "This campaign has been completed — thank you to everyone who gave. Check Field Notes for what your support made possible.",
+    campaignDetail_gallery: "Gallery",
+    campaignDetail_watchVideo: "Watch",
+    campaignDetail_budgetBreakdown: "Where your money goes",
+    campaignDetail_outcomes: "What this has achieved",
 
     fieldNotes_eyebrow: "Proof it's real",
     fieldNotes_title: "Field Notes",
@@ -102,6 +106,10 @@ export const translations: Record<Locale, Record<string, string>> = {
     campaignDetail_giveButton: "Faire un don à cette campagne",
     campaignDetail_completedNote:
       "Cette campagne est terminée — merci à toutes les personnes qui ont donné. Consultez les Notes de terrain pour voir ce que votre soutien a permis de réaliser.",
+    campaignDetail_gallery: "Galerie",
+    campaignDetail_watchVideo: "Regarder",
+    campaignDetail_budgetBreakdown: "Où va votre argent",
+    campaignDetail_outcomes: "Ce que cela a permis d'accomplir",
 
     fieldNotes_eyebrow: "La preuve que c'est réel",
     fieldNotes_title: "Notes de terrain",

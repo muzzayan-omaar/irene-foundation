@@ -8,6 +8,12 @@ const campaignSchema = z.object({
   slug: z.string().min(2),
   story: z.string().min(10),
   coverImage: z.string().url().optional(),
+  galleryImages: z.array(z.string().url()).default([]),
+  videoUrl: z.string().url().optional(),
+  budgetBreakdown: z
+    .array(z.object({ label: z.string().min(1), amount: z.coerce.number() }))
+    .optional(),
+  outcomes: z.string().optional(),
   goalAmount: z.coerce.number().positive(),
   currency: z.string().default("USD"),
   status: z.enum(["DRAFT", "ACTIVE", "COMPLETED", "PAUSED"]).default("DRAFT"),

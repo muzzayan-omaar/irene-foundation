@@ -110,6 +110,10 @@ model Campaign {
   slug         String         @unique
   story        String         @db.Text
   coverImage   String?        // Cloudinary URL
+  galleryImages String[]      @default([]) // additional photos beyond the cover
+  videoUrl     String?        // optional campaign video (Cloudinary-hosted)
+  budgetBreakdown Json?       // array of { label: string, amount: number } line items
+  outcomes     String?        @db.Text // what this campaign actually achieved so far
   goalAmount   Decimal        @db.Decimal(12, 2)
   currency     String         @default("USD")
   status       CampaignStatus @default(DRAFT)

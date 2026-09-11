@@ -22,6 +22,11 @@ export default async function EditCampaignPage({
           slug: campaign.slug,
           story: campaign.story,
           coverImage: campaign.coverImage ?? "",
+          galleryImages: campaign.galleryImages ?? [],
+          videoUrl: campaign.videoUrl ?? "",
+          budgetBreakdown:
+            (campaign.budgetBreakdown as { label: string; amount: number }[]) ?? [],
+          outcomes: campaign.outcomes ?? "",
           goalAmount: campaign.goalAmount.toString(),
           currency: campaign.currency,
           status: campaign.status,

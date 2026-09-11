@@ -3,6 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/ToastProvider";
+import CloudinaryUploadButton from "./CloudinaryUploadButton";
+
+type BudgetLine = { label: string; amount: number | string };
 
 type CampaignFormValues = {
   id?: string;
@@ -10,6 +13,10 @@ type CampaignFormValues = {
   slug: string;
   story: string;
   coverImage?: string;
+  galleryImages: string[];
+  videoUrl?: string;
+  budgetBreakdown: BudgetLine[];
+  outcomes?: string;
   goalAmount: number | string;
   currency: string;
   status: "DRAFT" | "ACTIVE" | "COMPLETED" | "PAUSED";
@@ -27,6 +34,10 @@ export default function CampaignForm({
       slug: "",
       story: "",
       coverImage: "",
+      galleryImages: [],
+      videoUrl: "",
+      budgetBreakdown: [],
+      outcomes: "",
       goalAmount: "",
       currency: "USD",
       status: "DRAFT",
@@ -44,15 +55,47 @@ export default function CampaignForm({
     setValues((prev) => ({ ...prev, [key]: value }));
   }
 
+  function addBudgetLine() {
+    update("budgetBreakdown", [...values.budgetBreakdown, { label: "", amount: "" }]);
+  }
+
+  function updateBudgetLine(index: number, field: keyof BudgetLine, value: string) {
+    const updated = [...values.budgetBreakdown];
+    updated[index] = { ...updated[index], [field]: value };
+    update("budgetBreakdown", updated);
+  }
+
+  function removeBudgetLine(index: number) {
+    update(
+      "budgetBreakdown",
+      values.budgetBreakdown.filter((_, i) => i !== index)
+    );
+  }
+
+  function removeGalleryImage(index: number) {
+    update(
+      "galleryImages",
+      values.galleryImages.filter((_, i) => i !== index)
+    );
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSubmitting(true);
     setError(null);
 
+    // Clean up budget lines — drop empty rows, coerce amounts to numbers
+    const payload = {
+      ...values,
+      budgetBreakdown: values.budgetBreakdown
+        .filter((line) => line.label.trim() !== "")
+        .map((line) => ({ label: line.label, amount: Number(line.amount) || 0 })),
+    };
+
     const res = await fetch("/api/admin/campaigns", {
       method: isEditing ? "PATCH" : "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(values),
+      body: JSON.stringify(payload),
     });
 
     const result = await res.json();
@@ -70,7 +113,7 @@ export default function CampaignForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-lg space-y-4">
+    <form onSubmit={handleSubmit} className="max-w-lg space-y-6">
       <div>
         <label className="block text-sm font-medium mb-1">Title</label>
         <input
@@ -106,16 +149,62 @@ export default function CampaignForm({
         />
       </div>
 
+      {/* Cover image */}
+      <div>
+        <label className="block text-sm font-medium mb-1">Cover Image</label>
+        <div className="flex items-center gap-3">
+          <CloudinaryUploadButton onUpload={(url) => update("coverImage", url)} />
+          {values.coverImage && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={values.coverImage} alt="" className="h-12 w-12 object-cover rounded-md" />
+          )}
+        </div>
+      </div>
+
+      {/* Gallery */}
       <div>
         <label className="block text-sm font-medium mb-1">
-          Cover Image URL (Cloudinary)
+          Gallery (additional photos)
         </label>
-        <input
-          value={values.coverImage}
-          onChange={(e) => update("coverImage", e.target.value)}
-          placeholder="https://res.cloudinary.com/..."
-          className="w-full rounded-md border border-gray-200 px-3 py-2 text-sm"
+        <CloudinaryUploadButton
+          label="Add Photo to Gallery"
+          onUpload={(url) => update("galleryImages", [...values.galleryImages, url])}
         />
+        {values.galleryImages.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-3">
+            {values.galleryImages.map((url, i) => (
+              <div key={i} className="relative">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={url} alt="" className="h-16 w-16 object-cover rounded-md" />
+                <button
+                  type="button"
+                  onClick={() => removeGalleryImage(i)}
+                  className="absolute -top-1.5 -right-1.5 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Video */}
+      <div>
+        <label className="block text-sm font-medium mb-1">
+          Campaign Video (optional)
+        </label>
+        <div className="flex items-center gap-3">
+          <CloudinaryUploadButton
+            label="Upload Video"
+            onUpload={(url) => update("videoUrl", url)}
+          />
+          {values.videoUrl && (
+            <span className="text-xs text-gray-400 truncate max-w-[200px]">
+              Video attached
+            </span>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
@@ -137,6 +226,65 @@ export default function CampaignForm({
             className="w-full rounded-md border border-gray-200 px-3 py-2 text-sm"
           />
         </div>
+      </div>
+
+      {/* Budget breakdown */}
+      <div>
+        <label className="block text-sm font-medium mb-1">
+          Budget Breakdown (optional)
+        </label>
+        <p className="text-xs text-gray-400 mb-2">
+          e.g. &quot;School fees&quot; — 2,000,000. Shown as a visual breakdown on the campaign page.
+        </p>
+        <div className="space-y-2">
+          {values.budgetBreakdown.map((line, i) => (
+            <div key={i} className="flex gap-2">
+              <input
+                placeholder="Label (e.g. School fees)"
+                value={line.label}
+                onChange={(e) => updateBudgetLine(i, "label", e.target.value)}
+                className="flex-1 rounded-md border border-gray-200 px-3 py-2 text-sm"
+              />
+              <input
+                type="number"
+                placeholder="Amount"
+                value={line.amount}
+                onChange={(e) => updateBudgetLine(i, "amount", e.target.value)}
+                className="w-32 rounded-md border border-gray-200 px-3 py-2 text-sm"
+              />
+              <button
+                type="button"
+                onClick={() => removeBudgetLine(i)}
+                className="text-red-500 text-sm px-2"
+              >
+                ×
+              </button>
+            </div>
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={addBudgetLine}
+          className="text-sm text-gray-600 underline mt-2"
+        >
+          + Add budget line
+        </button>
+      </div>
+
+      {/* Outcomes */}
+      <div>
+        <label className="block text-sm font-medium mb-1">
+          Outcomes (optional)
+        </label>
+        <p className="text-xs text-gray-400 mb-1">
+          What has this campaign achieved so far? Shown on the campaign page whenever filled in.
+        </p>
+        <textarea
+          value={values.outcomes}
+          onChange={(e) => update("outcomes", e.target.value)}
+          rows={4}
+          className="w-full rounded-md border border-gray-200 px-3 py-2 text-sm"
+        />
       </div>
 
       <div>
