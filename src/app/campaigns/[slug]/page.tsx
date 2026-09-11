@@ -5,6 +5,7 @@ import ShareButtons from "@/components/ShareButtons";
 import DonateForm from "@/components/DonateForm";
 import { getServerLocale } from "@/lib/i18n/getServerLocale";
 import { translate } from "@/lib/i18n/translations";
+import CampaignGallery from "@/components/CampaignGallery";
 
 type BudgetLine = { label: string; amount: number };
 
@@ -33,7 +34,7 @@ export default async function CampaignDetailPage({
         <img
           src={campaign.coverImage}
           alt={campaign.title}
-          className="w-full h-80 sm:h-96 object-cover rounded-2xl"
+          className="w-full aspect-[16/9] object-cover object-top rounded-2xl"
         />
       )}
 
@@ -57,17 +58,10 @@ export default async function CampaignDetailPage({
               <h2 className="font-display font-semibold text-xl mb-4">
                 {t("campaignDetail_gallery")}
               </h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {campaign.galleryImages.map((url, i) => (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    key={i}
-                    src={url}
-                    alt={`${campaign.title} photo ${i + 1}`}
-                    className="w-full aspect-square object-cover rounded-lg"
-                  />
-                ))}
-              </div>
+              <CampaignGallery
+                images={campaign.galleryImages}
+                campaignUrl={`${process.env.NEXT_PUBLIC_SITE_URL}/campaigns/${campaign.slug}`}
+              />
             </div>
           )}
 

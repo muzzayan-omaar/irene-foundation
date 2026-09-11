@@ -5,9 +5,11 @@ import { CldUploadWidget, type CloudinaryUploadWidgetResults } from "next-cloudi
 export default function CloudinaryUploadButton({
   onUpload,
   label = "Upload Image",
+  multiple = false,
 }: {
   onUpload: (url: string) => void;
   label?: string;
+  multiple?: boolean;
 }) {
   function handleSuccess(result: CloudinaryUploadWidgetResults) {
     if (
@@ -22,6 +24,7 @@ export default function CloudinaryUploadButton({
   return (
     <CldUploadWidget
       uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
+      options={{ multiple, maxFiles: multiple ? 10 : 1 }}
       onSuccess={handleSuccess}
     >
       {({ open }) => (

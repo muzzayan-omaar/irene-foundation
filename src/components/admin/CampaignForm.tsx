@@ -72,6 +72,18 @@ export default function CampaignForm({
     );
   }
 
+  function addGalleryImage(url: string) {
+    // Functional update reads the LATEST state at update-time, not the
+    // possibly-stale `values` from this callback's closure — this is what
+    // was silently dropping all but the last photo when uploading several
+    // in quick succession.
+    setValues((prev) => ({ ...prev, galleryImages: [...prev.galleryImages, url] }));
+  }
+
+  function removeCoverImage() {
+    update("coverImage", "");
+  }
+
   function removeGalleryImage(index: number) {
     update(
       "galleryImages",
@@ -155,8 +167,17 @@ export default function CampaignForm({
         <div className="flex items-center gap-3">
           <CloudinaryUploadButton onUpload={(url) => update("coverImage", url)} />
           {values.coverImage && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={values.coverImage} alt="" className="h-12 w-12 object-cover rounded-md" />
+            <div className="relative">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={values.coverImage} alt="" className="h-12 w-12 object-cover rounded-md" />
+              <button
+                type="button"
+                onClick={removeCoverImage}
+                className="absolute -top-1.5 -right-1.5 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center"
+              >
+                ×
+              </button>
+            </div>
           )}
         </div>
       </div>
@@ -168,7 +189,8 @@ export default function CampaignForm({
         </label>
         <CloudinaryUploadButton
           label="Add Photo to Gallery"
-          onUpload={(url) => update("galleryImages", [...values.galleryImages, url])}
+          multiple
+          onUpload={addGalleryImage}
         />
         {values.galleryImages.length > 0 && (
           <div className="flex flex-wrap gap-2 mt-3">
