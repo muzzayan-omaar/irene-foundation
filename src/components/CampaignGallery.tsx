@@ -56,26 +56,40 @@ export default function CampaignGallery({
 
   return (
     <>
-      {/* Modern masonry grid */}
-      <div className="columns-2 sm:columns-3 gap-3 space-y-3">
-        {images.map((url, i) => (
-          <button
-            key={i}
-            onClick={() => setOpenIndex(i)}
-            className="block w-full break-inside-avoid rounded-xl overflow-hidden group relative focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ink/40"
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={url}
-              alt={`Gallery photo ${i + 1}`}
-              className="w-full h-auto object-cover transition duration-300 group-hover:scale-[1.03] group-hover:brightness-95"
-              loading="lazy"
-            />
-            {/* subtle hover overlay */}
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition duration-300" />
-          </button>
-        ))}
-      </div>
+      {/* Modern masonry — natural heights, no uniform cards */}
+<div
+  className="w-full"
+  style={{
+    columnCount: 3,
+    columnGap: "12px",
+  }}
+>
+  <style jsx>{`
+    @media (max-width: 640px) {
+      div {
+        column-count: 2 !important;
+      }
+    }
+  `}</style>
+
+  {images.map((url, i) => (
+    <button
+      key={i}
+      onClick={() => setOpenIndex(i)}
+      className="mb-3 w-full break-inside-avoid overflow-hidden rounded-xl focus:outline-none"
+      style={{ display: "inline-block" }}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={url}
+        alt={`Gallery photo ${i + 1}`}
+        className="w-full h-auto block transition duration-300 hover:brightness-95 hover:scale-[1.02]"
+        style={{ display: "block" }}
+        loading="lazy"
+      />
+    </button>
+  ))}
+</div>
 
       {/* Lightbox */}
       {openIndex !== null && (
