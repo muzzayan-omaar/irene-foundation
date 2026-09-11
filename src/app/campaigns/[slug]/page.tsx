@@ -30,13 +30,13 @@ export default async function CampaignDetailPage({
   return (
     <div className="max-w-5xl mx-auto px-6 sm:px-12 py-16 space-y-12">
       {campaign.coverImage && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={campaign.coverImage}
-          alt={campaign.title}
-          className="w-full aspect-[16/9] object-cover object-top rounded-2xl"
-        />
-      )}
+  // eslint-disable-next-line @next/next/no-img-element
+  <img
+    src={campaign.coverImage}
+    alt={campaign.title}
+    className="w-full h-auto max-h-[70vh] object-contain"
+  />
+)}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
         <div className="md:col-span-2 space-y-10">
