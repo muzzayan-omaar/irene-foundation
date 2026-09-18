@@ -96,9 +96,14 @@ export default function CampaignForm({
     setSubmitting(true);
     setError(null);
 
-    // Clean up budget lines — drop empty rows, coerce amounts to numbers
+    // Empty strings fail z.string().url() even though the field is
+    // .optional() — optional means "can be missing", not "can be blank".
+    // Convert blanks to undefined so an un-set cover/video doesn't silently
+    // block submission.
     const payload = {
       ...values,
+      coverImage: values.coverImage || undefined,
+      videoUrl: values.videoUrl || undefined,
       budgetBreakdown: values.budgetBreakdown
         .filter((line) => line.label.trim() !== "")
         .map((line) => ({ label: line.label, amount: Number(line.amount) || 0 })),

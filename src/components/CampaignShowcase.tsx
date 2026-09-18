@@ -148,7 +148,7 @@ export default function CampaignShowcase({
                   href={`/campaigns/${active.slug}`}
                   className="inline-flex items-center gap-1.5 bg-sun text-ink px-5 py-2.5 rounded-full font-semibold text-sm hover:brightness-105 transition"
                 >
-                  Give Now
+                  Learn More
                   <ArrowRight size={14} />
                 </Link>
               </div>

@@ -20,6 +20,7 @@ export async function getCampaignBySlug(slug: string) {
 
   return {
     ...campaign,
+    galleryImages: campaign.galleryImages ?? [],
     ...computeCampaignStats(campaign.goalAmount, campaign.donations),
   };
 }
@@ -37,6 +38,7 @@ export async function listActiveCampaigns() {
 
   return campaigns.map((campaign) => ({
     ...campaign,
+    galleryImages: campaign.galleryImages ?? [],
     ...computeCampaignStats(campaign.goalAmount, campaign.donations),
   }));
 }

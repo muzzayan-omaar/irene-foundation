@@ -13,9 +13,9 @@ import CampaignShowcase from "@/components/CampaignShowcase";
 import JoinMovementCTA from "@/components/JoinMovementCTA";
 
 const HERO_IMAGE_URL =
-  "https://images.unsplash.com/photo-1509099836639-18ba1795216d?q=80&w=1600";
+  "https://res.cloudinary.com/diszilwhc/image/upload/v1789106162/IMG_1186.jpg_x3gdte.jpg";
 const HERO_VIDEO_URL: string | null =
-  "https://res.cloudinary.com/diszilwhc/video/upload/v1788479236/AQMcZMrmNz_QYih3LpRr7IoDr09OBVXvY32QgF47I-SEeOf60uiEAQ1iDa_0QugqNgu_nh4S7MVbhJc8x0xhsZo_svipjg.mp4";
+  "";
 
 const PANEL_THEMES = [
   { bg: "bg-ink", text: "text-paper", accent: "text-sun" },
@@ -48,7 +48,7 @@ export default async function Home() {
     where: { status: "ACTIVE" },
     take: 8,
   }),
-  // ✅ only the findMany (removed the old findFirst)
+  // only the findMany (removed the old findFirst)
   prisma.activity.findMany({
     where: { type: "VIDEO", isPublished: true },
     orderBy: { publishedAt: "desc" },
@@ -112,7 +112,7 @@ export default async function Home() {
               href="/campaigns"
               className="bg-sun text-ink px-7 py-3 rounded-full font-semibold text-sm hover:brightness-105 transition inline-flex items-center gap-2"
             >
-              Give today <Heart fill="currentColor" className="size-4" />
+              Learn More 
             </Link>
             <Link
               href="/get-involved"
@@ -125,53 +125,53 @@ export default async function Home() {
       </section>
 
       {/* ─── Trust stats ──────────────────────────────────────── */}
-<section className="bg-paper border-b border-ink/8 px-6 sm:px-12 py-12 sm:py-14">
-  <div className="max-w-5xl mx-auto">
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-0 text-center sm:divide-x sm:divide-ink/10">
-      
-      {/* Raised */}
-      <div className="sm:px-8">
-        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/40 mb-3">
-          Raised so far
-        </p>
-        <p className="font-display font-extrabold text-3xl sm:text-4xl text-clay tracking-tight">
-          USD {raisedTotal.toLocaleString()}
-        </p>
-      </div>
+      <section className="bg-paper border-b border-ink/8 px-6 sm:px-12 py-12 sm:py-14">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-0 text-center sm:divide-x sm:divide-ink/10">
+            
+            {/* Raised */}
+            <div className="sm:px-8">
+              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/40 mb-3">
+                Raised so far
+              </p>
+              <p className="font-display font-extrabold text-3xl sm:text-4xl text-clay tracking-tight">
+                USD {raisedTotal.toLocaleString()}
+              </p>
+            </div>
 
-      {/* Active campaigns */}
-      <div className="sm:px-8">
-        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/40 mb-3">
-          Active campaigns
-        </p>
-        <p className="font-display font-extrabold text-3xl sm:text-4xl text-clay tracking-tight">
-          {activeCampaignCount}
-        </p>
-      </div>
+            {/* Active campaigns */}
+            <div className="sm:px-8">
+              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/40 mb-3">
+                Active campaigns
+              </p>
+              <p className="font-display font-extrabold text-3xl sm:text-4xl text-clay tracking-tight">
+                {activeCampaignCount}
+              </p>
+            </div>
 
-      {/* Supporters */}
-      <div className="sm:px-8">
-        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/40 mb-3">
-          Donors & supporters
-        </p>
-        <p className="font-display font-extrabold text-3xl sm:text-4xl text-clay tracking-tight">
-          {supporterCount.toLocaleString()}
-        </p>
-      </div>
-    </div>
+            {/* Supporters */}
+            <div className="sm:px-8">
+              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/40 mb-3">
+                Donors & supporters
+              </p>
+              <p className="font-display font-extrabold text-3xl sm:text-4xl text-clay tracking-tight">
+                {supporterCount.toLocaleString()}
+              </p>
+            </div>
+          </div>
 
-    {/* Link */}
-    <div className="mt-10 text-center">
-      <Link
-        href="/transparency"
-        className="inline-flex items-center gap-1.5 text-sm text-ink/50 hover:text-ink transition"
-      >
-        See the full breakdown
-        <span className="transition-transform group-hover:translate-x-0.5">→</span>
-      </Link>
-    </div>
-  </div>
-</section>
+          {/* Link */}
+          <div className="mt-10 text-center">
+            <Link
+              href="/transparency"
+              className="inline-flex items-center gap-1.5 text-sm text-ink/50 hover:text-ink transition"
+            >
+              See the full breakdown
+              <span className="transition-transform group-hover:translate-x-0.5">→</span>
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {/* ─── Campaign panels ──────────────────────────────────── */}
       {campaigns.length > 0 && (
@@ -192,149 +192,149 @@ export default async function Home() {
       )}
 
      {/* ─── What We Do ───────────────────────────────────────── */}
-<section className="bg-paper px-6 sm:px-12 py-20 sm:py-28 overflow-hidden">
-  <div className="max-w-5xl mx-auto mb-16">
-    <p className="font-mono text-clay text-xs tracking-[0.18em] uppercase mb-4 text-center">
-      Our focus
-    </p>
-    <h2 className="font-display font-extrabold text-3xl sm:text-5xl tracking-tight text-center text-ink">
-      What We Deliver
-    </h2>
-  </div>
+    <section className="bg-paper px-6 sm:px-12 py-20 sm:py-28 overflow-hidden">
+      <div className="max-w-5xl mx-auto mb-16">
+        <p className="font-mono text-clay text-xs tracking-[0.18em] uppercase mb-4 text-center">
+          Our focus
+        </p>
+        <h2 className="font-display font-extrabold text-3xl sm:text-5xl tracking-tight text-center text-ink">
+          What We Deliver
+        </h2>
+      </div>
 
-  {/* ── Dual Row Marquee ── */}
-  <div className="relative">
-    {/* Edge fade masks */}
-    <div className="pointer-events-none absolute inset-y-0 left-0 w-24 sm:w-40 bg-gradient-to-r from-paper to-transparent z-20" />
-    <div className="pointer-events-none absolute inset-y-0 right-0 w-24 sm:w-40 bg-gradient-to-l from-paper to-transparent z-20" />
+      {/* ── Dual Row Marquee ── */}
+      <div className="relative">
+        {/* Edge fade masks */}
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-24 sm:w-40 bg-gradient-to-r from-paper to-transparent z-20" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-24 sm:w-40 bg-gradient-to-l from-paper to-transparent z-20" />
 
-    {/* ── Row 1 →  */}
-    <div className="group mb-8 overflow-hidden">
-      <div className="flex w-max animate-marquee-left group-hover:[animation-play-state:paused]">
-        {[...Array(2)].map((_, i) => (
-          <div key={i} className="flex gap-6 pr-6">
-            {[
-              {
-                img: "https://res.cloudinary.com/diszilwhc/image/upload/v1788477304/Screenshot_2026-09-04_025416_f2biax.png?w=400&h=300&fit=crop",
-                Icon: BookOpen,
-                title: "Education",
-                body: "Helping children and women access the education that opens doors.",
-              },
-              {
-                img: "https://res.cloudinary.com/diszilwhc/image/upload/v1788477304/Screenshot_2026-09-04_025516_n4gude.png?w=400&h=300&fit=crop",
-                Icon: Utensils,
-                title: "Food",
-                body: "Meals and food security for families who need it most.",
-              },
-              {
-                img: "https://res.cloudinary.com/diszilwhc/image/upload/v1788477304/Screenshot_2026-09-04_025449_qcdlwg.png?w=400&h=300&fit=crop",
-                Icon: HeartPulse,
-                title: "Healthcare",
-                body: "Access to healthcare and wellbeing support for vulnerable communities.",
-              },
-              {
-                img: "https://res.cloudinary.com/diszilwhc/image/upload/v1788477304/Screenshot_2026-09-04_025347_tbmqtz.png?w=400&h=300&fit=crop",
-                Icon: ShieldCheck,
-                title: "Protection",
-                body: "Standing against violence and exploitation, and protecting the rights of women and children.",
-              },
-            ].map((item) => (
-              <div
-                key={item.title}
-                className="flex w-[420px] sm:w-[480px] h-40 rounded-2xl overflow-hidden shadow-md"
-              >
-                {/* Image + soft sun fade */}
-                <div className="relative w-2/5 h-full flex-shrink-0">
-                  <img
-                    src={item.img}
-                    alt={item.title}
-                    className="w-full h-full object-cover"
-                  />
-                  {/* Blur-fade from sun into the photo */}
-                  <div className="absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-sun via-sun/60 to-transparent" />
-                </div>
+        {/* ── Row 1 →  */}
+        <div className="group mb-8 overflow-hidden">
+          <div className="flex w-max animate-marquee-left group-hover:[animation-play-state:paused]">
+            {[...Array(2)].map((_, i) => (
+              <div key={i} className="flex gap-6 pr-6">
+                {[
+                  {
+                    img: "https://res.cloudinary.com/diszilwhc/image/upload/v1788477304/Screenshot_2026-09-04_025416_f2biax.png?w=400&h=300&fit=crop",
+                    Icon: BookOpen,
+                    title: "Education",
+                    body: "Helping children and women access the education that opens doors.",
+                  },
+                  {
+                    img: "https://res.cloudinary.com/diszilwhc/image/upload/v1789106155/IMG_1287.jpg_osidvr.jpg?w=400&h=300&fit=crop",
+                    Icon: Utensils,
+                    title: "Food",
+                    body: "Meals and food security for families who need it most.",
+                  },
+                  {
+                    img: "https://res.cloudinary.com/diszilwhc/image/upload/v1789106153/IMG_1125.jpg_uaqbtw.jpg?w=400&h=300&fit=crop",
+                    Icon: HeartPulse,
+                    title: "Healthcare",
+                    body: "Access to healthcare and wellbeing support for vulnerable communities.",
+                  },
+                  {
+                    img: "https://res.cloudinary.com/diszilwhc/image/upload/v1788477304/Screenshot_2026-09-04_025347_tbmqtz.png?w=400&h=300&fit=crop",
+                    Icon: ShieldCheck,
+                    title: "Protection",
+                    body: "Standing against violence and exploitation, and protecting the rights of women and children.",
+                  },
+                ].map((item) => (
+                  <div
+                    key={item.title}
+                    className="flex w-[420px] sm:w-[480px] h-40 rounded-2xl overflow-hidden shadow-md"
+                  >
+                    {/* Image + soft sun fade */}
+                    <div className="relative w-2/5 h-full flex-shrink-0">
+                      <img
+                        src={item.img}
+                        alt={item.title}
+                        className="w-full h-full object-cover"
+                      />
+                      {/* Blur-fade from sun into the photo */}
+                      <div className="absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-sun via-sun/60 to-transparent" />
+                    </div>
 
-                {/* Content – sun */}
-                <div className="w-3/5 p-5 flex flex-col justify-center bg-sun text-ink">
-                  <item.Icon className="text-ink mb-2" size={22} strokeWidth={1.75} />
-                  <h3 className="font-display font-bold text-lg mb-1.5 text-ink">
-                    {item.title}
-                  </h3>
-                  <p className="text-ink/70 text-sm leading-relaxed line-clamp-2">
-                    {item.body}
-                  </p>
-                </div>
+                    {/* Content – sun */}
+                    <div className="w-3/5 p-5 flex flex-col justify-center bg-sun text-ink">
+                      <item.Icon className="text-ink mb-2" size={22} strokeWidth={1.75} />
+                      <h3 className="font-display font-bold text-lg mb-1.5 text-ink">
+                        {item.title}
+                      </h3>
+                      <p className="text-ink/70 text-sm leading-relaxed line-clamp-2">
+                        {item.body}
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
             ))}
           </div>
-        ))}
-      </div>
-    </div>
+        </div>
 
-    {/* ── Row 2 ← (swapped layout) ── */}
-    <div className="group overflow-hidden">
-      <div className="flex w-max animate-marquee-right group-hover:[animation-play-state:paused]">
-        {[...Array(2)].map((_, i) => (
-          <div key={i} className="flex gap-6 pr-6">
-            {[
-              {
-                img: "https://res.cloudinary.com/diszilwhc/image/upload/v1788477304/Screenshot_2026-09-04_025449_qcdlwg.png?w=400&h=300&fit=crop",
-                Icon: HeartPulse,
-                title: "Healthcare",
-                body: "Access to healthcare and wellbeing support for vulnerable communities.",
-              },
-              {
-                img: "https://res.cloudinary.com/diszilwhc/image/upload/v1788477304/Screenshot_2026-09-04_025347_tbmqtz.png?w=400&h=300&fit=crop",
-                Icon: ShieldCheck,
-                title: "Protection",
-                body: "Standing against violence and exploitation, and protecting the rights of women and children.",
-              },
-              {
-                img: "https://res.cloudinary.com/diszilwhc/image/upload/v1788477304/Screenshot_2026-09-04_025416_f2biax.png?w=400&h=300&fit=crop",
-                Icon: BookOpen,
-                title: "Education",
-                body: "Helping children and women access the education that opens doors.",
-              },
-              {
-                img: "https://res.cloudinary.com/diszilwhc/image/upload/v1788477304/Screenshot_2026-09-04_025516_n4gude.png?w=400&h=300&fit=crop",
-                Icon: Utensils,
-                title: "Food",
-                body: "Meals and food security for families who need it most.",
-              },
-            ].map((item) => (
-              <div
-                key={item.title}
-                className="flex w-[420px] sm:w-[480px] h-40 rounded-2xl overflow-hidden shadow-md"
-              >
-                {/* Content – sun (left) */}
-                <div className="w-3/5 p-5 flex flex-col justify-center bg-sun text-ink order-1">
-                  <item.Icon className="text-ink mb-2" size={22} strokeWidth={1.75} />
-                  <h3 className="font-display font-bold text-lg mb-1.5 text-ink">
-                    {item.title}
-                  </h3>
-                  <p className="text-ink/70 text-sm leading-relaxed line-clamp-2">
-                    {item.body}
-                  </p>
-                </div>
+        {/* ── Row 2 ← (swapped layout) ── */}
+        <div className="group overflow-hidden">
+          <div className="flex w-max animate-marquee-right group-hover:[animation-play-state:paused]">
+            {[...Array(2)].map((_, i) => (
+              <div key={i} className="flex gap-6 pr-6">
+                {[
+                  {
+                    img: "https://res.cloudinary.com/diszilwhc/image/upload/v1788477304/Screenshot_2026-09-04_025449_qcdlwg.png?w=400&h=300&fit=crop",
+                    Icon: HeartPulse,
+                    title: "Healthcare",
+                    body: "Access to healthcare and wellbeing support for vulnerable communities.",
+                  },
+                  {
+                    img: "https://res.cloudinary.com/diszilwhc/image/upload/v1788477304/Screenshot_2026-09-04_025347_tbmqtz.png?w=400&h=300&fit=crop",
+                    Icon: ShieldCheck,
+                    title: "Protection",
+                    body: "Standing against violence and exploitation, and protecting the rights of women and children.",
+                  },
+                  {
+                    img: "https://res.cloudinary.com/diszilwhc/image/upload/v1788477304/Screenshot_2026-09-04_025416_f2biax.png?w=400&h=300&fit=crop",
+                    Icon: BookOpen,
+                    title: "Education",
+                    body: "Helping children and women access the education that opens doors.",
+                  },
+                  {
+                    img: "https://res.cloudinary.com/diszilwhc/image/upload/v1789106153/IMG_1308.jpg_cf12do.jpg?w=400&h=300&fit=crop",
+                    Icon: Utensils,
+                    title: "Food",
+                    body: "Meals and food security for families who need it most.",
+                  },
+                ].map((item) => (
+                  <div
+                    key={item.title}
+                    className="flex w-[420px] sm:w-[480px] h-40 rounded-2xl overflow-hidden shadow-md"
+                  >
+                    {/* Content – sun (left) */}
+                    <div className="w-3/5 p-5 flex flex-col justify-center bg-sun text-ink order-1">
+                      <item.Icon className="text-ink mb-2" size={22} strokeWidth={1.75} />
+                      <h3 className="font-display font-bold text-lg mb-1.5 text-ink">
+                        {item.title}
+                      </h3>
+                      <p className="text-ink/70 text-sm leading-relaxed line-clamp-2">
+                        {item.body}
+                      </p>
+                    </div>
 
-                {/* Image + soft sun fade (right) */}
-                <div className="relative w-2/5 h-full flex-shrink-0 order-2">
-                  <img
-                    src={item.img}
-                    alt={item.title}
-                    className="w-full h-full object-cover"
-                  />
-                  {/* Blur-fade from sun into the photo */}
-                  <div className="absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-sun via-sun/60 to-transparent" />
-                </div>
+                    {/* Image + soft sun fade (right) */}
+                    <div className="relative w-2/5 h-full flex-shrink-0 order-2">
+                      <img
+                        src={item.img}
+                        alt={item.title}
+                        className="w-full h-full object-cover"
+                      />
+                      {/* Blur-fade from sun into the photo */}
+                      <div className="absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-sun via-sun/60 to-transparent" />
+                    </div>
+                  </div>
+                ))}
               </div>
             ))}
           </div>
-        ))}
+        </div>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
 
    {featuredVideos.length > 0 && (
   <FeaturedVideoSection
@@ -432,7 +432,7 @@ export default async function Home() {
     className="relative py-16 sm:py-24 bg-fixed bg-center bg-cover"
     style={{
       backgroundImage:
-        "url('https://res.cloudinary.com/diszilwhc/image/upload/v1788475606/IJE9b_bd3p2x.jpg')",
+        "url('https://res.cloudinary.com/diszilwhc/image/upload/v1789106153/IMG_1308.jpg_cf12do.jpg?w=1600&h=900&fit=crop')",
     }}
   >
     {/* Background overlay */}
@@ -667,7 +667,7 @@ const description =
         <div className="relative min-h-[40vh] sm:min-h-full">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="https://res.cloudinary.com/diszilwhc/image/upload/v1788475327/BNBjZ_rwjtet.jpg"
+            src="https://res.cloudinary.com/diszilwhc/image/upload/v1789106153/IMG_1308.jpg_cf12do.jpg"
             alt=""
             className="absolute inset-0 w-full h-full object-cover"
           />
@@ -681,7 +681,7 @@ const description =
               href="/campaigns"
               className="bg-sun text-ink px-6 py-3 rounded-full font-semibold text-sm hover:brightness-105 transition"
             >
-              Give Now
+              Learn More
             </Link>
             <Link
               href="/wall-of-support"
