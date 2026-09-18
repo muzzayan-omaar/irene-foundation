@@ -9,7 +9,7 @@ export default async function NewActivityPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">New Activity</h1>
+      <h1 className="text-2xl font-bold">New Activity/Activities</h1>
       <ActivityForm campaigns={campaigns} />
     </div>
   );
